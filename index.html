@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Momento Bar - Orçamento</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #f9f9f9 0%, #eaeaea 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      width: 100%;
+      max-width: 500px;
+      padding: 30px;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #000; /* Preto */
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+    h1 {
+      text-align: center;
+      color: #5D4037; /* Marrom escuro */
+      margin-bottom: 25px;
+      font-size: 22px;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      border-color: #5D4037; /* Marrom */
+      outline: none;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+    .checkbox-group input {
+      width: auto;
+      margin-right: 10px;
+      margin-top: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #5D4037; /* Marrom escuro */
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #3E2723; /* Marrom mais escuro */
+    }
+    #result {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      text-align: center;
+      display: none;
+    }
+    #result.show {
+      display: block;
+    }
+    #total {
+      font-size: 28px;
+      font-weight: bold;
+      color: #000;
+      margin: 10px 0;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .btn-group button {
+      flex: 1;
+      font-size: 14px;
+      padding: 10px;
+    }
+    .whatsapp-btn {
+      background: #25D366;
+    }
+    .whatsapp-btn:hover {
+      background: #128C7E;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">MOMENTO BAR</div>
+    <h1>Orçamento Rápido – Open Bar 5h</h1>
+    
+    <div class="input-group">
+      <label for="nome">Nome do cliente</label>
+      <input type="text" id="nome" placeholder="Ex: Ana Silva">
+    </div>
+    
+    <div class="input-group">
+      <label for="convidados">Número de convidados</label>
+      <input type="number" id="convidados" min="1" value="50">
+    </div>
+    
+    <div class="checkbox-group">
+      <input type="checkbox" id="balcao">
+      <label for="balcao">Balcão incluso (+R$ 250)</label>
+    </div>
+    
+    <div class="checkbox-group">
+      <input type="checkbox" id="coqueteleira">
+      <label for="coqueteleira">Coqueteleira personalizada (+R$ 150)</label>
+    </div>
+    
+    <div class="checkbox-group">
+      <input type="checkbox" id="deslocamento">
+      <label for="deslocamento">Deslocamento (>30km) (+R$ 200)</label>
+    </div>
+    
+    <button onclick="calcular()">CALCULAR ORÇAMENTO</button>
+    
+    <div id="result" class="result">
+      <p>✅ Orçamento estimado para:</p>
+      <p id="cliente">Cliente</p>
+      <div id="total">R$ 0,00</div>
+      
+      <div class="btn-group">
+        <button onclick="copiarValor()">Copiar valor</button>
+        <button class="whatsapp-btn" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function calcular() {
+      const nome = document.getElementById('nome').value || 'Cliente';
+      const convidados = parseInt(document.getElementById('convidados').value) || 0;
+      const balcao = document.getElementById('balcao').checked;
+      const coqueteleira = document.getElementById('coqueteleira').checked;
+      const deslocamento = document.getElementById('deslocamento').checked;
+      
+      if (convidados <= 0) {
+        alert('Por favor, insira um número válido de convidados.');
+        return;
+      }
+      
+      const valorMinimo = 1800;
+      const precoPorPessoa = 35;
+      const limiteMinimo = Math.floor(valorMinimo / precoPorPessoa); // 51 pessoas
+      
+      let valorBase = convidados <= limiteMinimo ? valorMinimo : convidados * precoPorPessoa;
+      
+      let extras = 0;
+      if (balcao) extras += 250;
+      if (coqueteleira) extras += 150;
+      if (deslocamento) extras += 200;
+      
+      const total = valorBase + extras;
+      
+      document.getElementById('cliente').textContent = nome;
+      document.getElementById('total').textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      document.getElementById('result').classList.add('show');
+    }
+    
+    function copiarValor() {
+      const totalText = document.getElementById('total').textContent;
+      navigator.clipboard.writeText(totalText).then(() => {
+        alert('Valor copiado!');
+      }).catch(() => {
+        alert('Seu navegador não permite copiar. Tente manualmente.');
+      });
+    }
+    
+    function enviarWhatsApp() {
+      const nome = document.getElementById('nome').value || 'Cliente';
+      const convidados = document.getElementById('convidados').value;
+      const balcao = document.getElementById('balcao').checked ? 'Sim' : 'Não';
+      const coqueteleira = document.getElementById('coqueteleira').checked ? 'Sim' : 'Não';
+      const deslocamento = document.getElementById('deslocamento').checked ? 'Sim' : 'Não';
+      const total = document.getElementById('total').textContent;
+      
+      const mensagem = `Olá! Segue orçamento para o evento:\n\n` +
+                       `Cliente: ${nome}\n` +
+                       `Convidados: ${convidados}\n` +
+                       `Balcão incluso: ${balcao}\n` +
+                       `Coqueteleira personalizada: ${coqueteleira}\n` +
+                       `Deslocamento: ${deslocamento}\n\n` +
+                       `Total estimado: ${total}\n\n` +
+                       `Incluso: open bar 5h completo com todos os insumos, bartenders, utensílios, frutas, gelo e limpeza.\n\n` +
+                       `Aguardamos seu retorno!`;
+      
+      const url = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
