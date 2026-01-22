@@ -52,7 +52,8 @@
       font-weight: 600;
     }
     input[type="text"],
-    input[type="number"] {
+    input[type="number"],
+    input[type="date"] {
       width: 100%;
       padding: 12px;
       border: 2px solid #444;
@@ -205,6 +206,16 @@
     </div>
     
     <div class="input-group">
+      <label for="dataEvento">Data do evento</label>
+      <input type="date" id="dataEvento">
+    </div>
+    
+    <div class="input-group">
+      <label for="localEvento">Local do evento</label>
+      <input type="text" id="localEvento" placeholder="Ex: Rua das Palmeiras, 123 – São Paulo/SP">
+    </div>
+    
+    <div class="input-group">
       <label for="convidados">Número de convidados</label>
       <input type="number" id="convidados" min="1" value="50">
     </div>
@@ -257,7 +268,6 @@
       }
     };
 
-    // Carregar configuração salva
     if (localStorage.getItem('momentoBarConfig')) {
       config = JSON.parse(localStorage.getItem('momentoBarConfig'));
       document.getElementById('precoPessoa').value = config.precoPorPessoa;
@@ -267,7 +277,6 @@
       document.getElementById('extraDeslocamento').value = config.extras.deslocamento;
     }
 
-    // Contador para ativar modo admin
     let adminClickCount = 0;
     function toggleAdmin() {
       adminClickCount++;
@@ -277,7 +286,6 @@
       }
     }
 
-    // Salvar configuração
     function saveConfig() {
       config.precoPorPessoa = parseInt(document.getElementById('precoPessoa').value) || 35;
       config.valorMinimo = parseInt(document.getElementById('valorMinimo').value) || 1800;
@@ -289,9 +297,16 @@
       alert('Configurações salvas!');
     }
 
-    // Calcular orçamento
+    function formatarDataBR(dataISO) {
+      if (!dataISO) return '';
+      const [ano, mes, dia] = dataISO.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
     function calcular() {
       const nome = document.getElementById('nome').value || 'Cliente';
+      const dataEvento = document.getElementById('dataEvento').value;
+      const localEvento = document.getElementById('localEvento').value || 'Não informado';
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
@@ -304,7 +319,6 @@
       
       const { precoPorPessoa, valorMinimo } = config;
       const limiteMinimo = Math.floor(valorMinimo / precoPorPessoa);
-      
       let valorBase = convidados <= limiteMinimo ? valorMinimo : convidados * precoPorPessoa;
       
       let extras = 0;
@@ -318,13 +332,11 @@
       document.getElementById('total').textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
       document.getElementById('result').classList.add('show');
 
-      // Gerar pré-visualização da mensagem
-      const previewMsg = gerarMensagem(nome, convidados, balcao, coposVidro, deslocamento, total);
+      const previewMsg = gerarMensagem(nome, dataEvento, localEvento, convidados, balcao, coposVidro, deslocamento, total);
       document.getElementById('previewText').textContent = previewMsg;
       document.getElementById('preview').classList.add('show');
     }
 
-    // Copiar valor
     function copiarValor() {
       const totalText = document.getElementById('total').textContent;
       navigator.clipboard.writeText(totalText).then(() => {
@@ -334,41 +346,45 @@
       });
     }
 
-    // Enviar WhatsApp
     function enviarWhatsApp() {
       const nome = document.getElementById('nome').value || 'Cliente';
+      const dataEvento = document.getElementById('dataEvento').value;
+      const localEvento = document.getElementById('localEvento').value || 'Não informado';
       const convidados = document.getElementById('convidados').value;
       const balcao = document.getElementById('balcao').checked ? 'Sim' : 'Não';
       const coposVidro = document.getElementById('coposVidro').checked ? 'Sim' : 'Não';
       const deslocamento = document.getElementById('deslocamento').checked ? 'Sim' : 'Não';
       const total = document.getElementById('total').textContent;
 
-      const mensagem = gerarMensagem(nome, convidados, balcao, coposVidro, deslocamento, total);
+      const mensagem = gerarMensagem(nome, dataEvento, localEvento, convidados, balcao, coposVidro, deslocamento, total);
 
       const url = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
       window.open(url, '_blank');
     }
 
-    // Gerar mensagem para WhatsApp
-    function gerarMensagem(nome, convidados, balcao, coposVidro, deslocamento, total) {
+    function gerarMensagem(nome, dataEvento, localEvento, convidados, balcao, coposVidro, deslocamento, total) {
+      const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : 'Data não informada';
       return `Olá, ${nome}! 🍸
 
-Seu orçamento da **Momento Bar** para ${convidados} convidados ficou em **${total}**.
+Seu orçamento da **Momento Bar** ficou em **${total}** para ${convidados} convidados.
+
+📅 Data do evento: ${dataFormatada}
+📍 Local: ${localEvento}
 
 ✨ TUDO INCLUSO NO VALOR:
 • Bebidas (vodca, whisky, rum, cerveja, refrigerante, água tônica)
 • Xaropes, frutas frescas, gelo e sucos
 • Copos descartáveis premium
 • Bartenders profissionais (5h de open bar)
-• Fruteiras, gelo e todos os utensílios
+• Fruteiras, balde de gelo e todos os utensílios
 • Limpeza completa após o evento
 
 ${balcao ? '• Balcão incluso\n' : ''}
 ${coposVidro ? '• Copos de vidro inclusos\n' : ''}
 ${deslocamento ? '• Deslocamento (>30km) incluso\n' : ''}
 
-Você planeja o evento, nós cuidamos do momento que todo mundo vai lembrar!  
-Aguardo Retorno! 😊`;
+Você planeja o evento, agente cuida do momento que todos vão lembrar!  
+Aguardo um retorno! 😊`;
     }
   </script>
 </body>
