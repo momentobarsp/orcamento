@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Momento Bartenders - Orçamento</title>
-  <!-- Fontes elegantes -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -29,16 +28,6 @@
       width: 100%;
       max-width: 520px;
       padding: 32px;
-      position: relative;
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 18px;
-      font-weight: 600;
-      color: #d4af37;
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      letter-spacing: 1.2px;
     }
     .input-group {
       margin-bottom: 24px;
@@ -143,40 +132,23 @@
       background: #3e2723;
       transform: translateY(-2px);
     }
-    .preview {
-      background: #2a2a2a;
-      border-left: 4px solid #d4af37;
-      padding: 16px;
-      border-radius: 8px;
-      margin-top: 20px;
-      display: none;
-    }
-    .preview.show {
-      display: block;
-    }
-    .preview-title {
-      font-weight: 700;
-      color: #d4af37;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    .preview pre {
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      color: #e0e0e0;
-      white-space: pre-wrap;
-      text-align: left;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="logo">MOMENTO BARTENDERS</div>
+    <!-- Logo redonda -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <img src="MEMORANDO%286%29.png" alt="Momento Bartenders" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #d4af37; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+    </div>
 
-    <!-- Formulário -->
     <div class="input-group">
       <label for="nome">Nome do cliente</label>
-      <input type="text" id="nome" placeholder="Ex: Ana Silva">
+      <input type="text" id="nome" placeholder="Ex: Ellen Lima">
+    </div>
+    
+    <div class="input-group">
+      <label for="localEvento">Local do evento</label>
+      <input type="text" id="localEvento" placeholder="Ex: Capela do Alto, SP">
     </div>
     
     <div class="input-group">
@@ -185,17 +157,12 @@
     </div>
     
     <div class="input-group">
-      <label for="localEvento">Local do evento</label>
-      <input type="text" id="localEvento" placeholder="Ex: Rua das Palmeiras, 123 – São Paulo/SP">
-    </div>
-    
-    <div class="input-group">
       <label for="distancia">Distância do evento (km)</label>
       <input type="number" id="distancia" min="0" value="0" placeholder="Ex: 25">
     </div>
     
     <div class="input-group">
-      <label for="pacote">Escolha o pacote</label>
+      <label for="pacote">Pacote</label>
       <select id="pacote">
         <option value="36.20">Tropical Classic</option>
         <option value="39.00">Mistura Contemporânea</option>
@@ -223,16 +190,10 @@
     
     <button onclick="calcular()">CALCULAR ORÇAMENTO</button>
 
-    <!-- Resultado -->
     <div id="result" class="result">
       <p>Orçamento estimado para:</p>
       <p id="cliente">Cliente</p>
       <div id="total">R$ 0,00</div>
-
-      <div class="preview">
-        <div class="preview-title">Pré-visualização da mensagem:</div>
-        <pre id="previewText"></pre>
-      </div>
 
       <div class="btn-group">
         <button onclick="copiarValor()">Copiar valor</button>
@@ -243,7 +204,6 @@
     </div>
   </div>
 
-  <!-- jsPDF para gerar PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const { jsPDF } = window.jspdf;
@@ -256,10 +216,11 @@
 
     function calcular() {
       const nome = document.getElementById('nome').value || 'Cliente';
+      const localEvento = document.getElementById('localEvento').value || '';
       const dataEvento = document.getElementById('dataEvento').value;
-      const localEvento = document.getElementById('localEvento').value || 'Não informado';
       const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
+      
       const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
       const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
       
@@ -281,13 +242,9 @@
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = valorBase + extras + taxaDeslocamento;
       
-      document.getElementById('cliente').textContent = nome;
+      document.getElementById('cliente').textContent = nome + (localEvento ? ` - ${localEvento}` : '');
       document.getElementById('total').textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
       document.getElementById('result').classList.add('show');
-
-      const previewMsg = gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total);
-      document.getElementById('previewText').textContent = previewMsg;
-      document.getElementById('preview').classList.add('show');
     }
 
     function copiarValor() {
@@ -301,89 +258,121 @@
 
     function enviarWhatsApp() {
       const nome = document.getElementById('nome').value || 'Cliente';
+      const localEvento = document.getElementById('localEvento').value || '';
       const dataEvento = document.getElementById('dataEvento').value;
-      const localEvento = document.getElementById('localEvento').value || 'Não informado';
       const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = document.getElementById('convidados').value;
       const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
-      
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = document.getElementById('total').textContent;
 
-      const mensagem = gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total);
+      let msg = `Olá, ${nome}!\n\nSeu orçamento da Momento Bartenders ficou em ${total} para ${convidados} convidados.\n\n`;
+      msg += `Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
+      msg += `Local: ${localEvento}\n`;
+      msg += `Pacote: ${nomePacote}\n\n`;
 
-      const url = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
-      window.open(url, '_blank');
-    }
+      if (balcao) msg += '• Balcão incluso\n';
+      if (coposVidro) msg += '• Copos de vidro inclusos\n';
+      if (taxaDeslocamento > 0) msg += '• Taxa de deslocamento aplicada (+R$ 200)\n';
 
-    function gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total) {
-      const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : 'Data não informada';
-      const deslocamentoTexto = distancia > 20 
-        ? '• Deslocamento (' + distancia + ' km) – taxa de R$ 200 aplicada\n' 
-        : '• Deslocamento (' + distancia + ' km) – sem taxa (até 20 km)\n';
+      msg += `\nVocê planeja o evento!\nNós cuidamos do momento que todos vão lembrar.`;
 
-      let extrasTexto = '';
-      if (balcao) extrasTexto += '• Balcão incluso\n';
-      if (coposVidro) extrasTexto += '• Copos de vidro inclusos\n';
-
-      return `Olá, ${nome}!
-
-Seu orçamento da Momento Bartenders ficou em ${total} para ${convidados} convidados.
-
-Data do evento: ${dataFormatada}
-Local: ${localEvento}
-Distância: ${distancia} km
-Pacote escolhido: ${nomePacote}
-
-TUDO INCLUSO NO VALOR:
-• Bebidas
-• Xaropes, frutas frescas, gelo
-• Copos descartáveis
-• Bartenders profissionais (5h de open bar)
-• Fruteiras, balde de gelo e todos os utensílios
-• Limpeza completa após o evento
-
-${extrasTexto}${deslocamentoTexto}
-Você planeja o evento!
-Nós cuidamos do momento em que todos vão lembrar.`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function gerarPDF() {
       const nome = document.getElementById('nome').value || 'Cliente';
+      const localEvento = document.getElementById('localEvento').value || '';
       const dataEvento = document.getElementById('dataEvento').value;
-      const localEvento = document.getElementById('localEvento').value || 'Não informado';
       const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
       const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
-      const total = document.getElementById('total').textContent;
+      const total = parseFloat(document.getElementById('total').textContent.replace(/\D/g, '').replace(/^(\d+)(\d{2})$/, '$1.$2')) || 0;
 
-      const mensagem = gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total);
+      const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : '';
+      const dataHoje = new Date().toLocaleDateString('pt-BR');
 
       const doc = new jsPDF();
       doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text(`${dataFormatada || 'Data não informada'}`, 15, 15);
+
       doc.setFontSize(18);
-      doc.text("MOMENTO BARTENDERS", 105, 15, null, null, "center");
-      doc.setFont("helvetica", "normal");
+      doc.text(`${nome} - ${localEvento}`, 15, 25);
+
+      doc.setFontSize(22);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`ORÇAMENTO BAR DE DRINKS`, 15, 40);
+
+      // Objetivo
       doc.setFontSize(12);
-      doc.text("Orçamento Oficial – Open Bar 5h", 105, 22, null, null, "center");
+      doc.setFont("helvetica", "bold");
+      doc.text("OBJETIVO", 15, 55);
+      doc.setFont("helvetica", "normal");
+      doc.text("Open bar de drinks, no qual a nossa empresa se responsabilizará por todo preparo e", 15, 62);
+      doc.text("mão de obra pelo bar de drinks no evento.", 15, 68);
 
-      doc.setDrawColor(212, 175, 55);
-      doc.line(15, 26, 195, 26);
+      // Proposta
+      doc.setFont("helvetica", "bold");
+      doc.text("PROPOSTA", 15, 82);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Open Bar de 5 Horas.`, 15, 89);
+      doc.text(`Para aproximadamente ${convidados} pessoas e inclui o seguinte:`, 15, 95);
 
-      const splitText = doc.splitTextToSize(mensagem, 180);
-      doc.setFontSize(11);
-      doc.setTextColor(30, 30, 30);
-      doc.text(splitText, 15, 32);
+      let y = 102;
+      const addItem = (item) => {
+        doc.text(`• ${item}`, 20, y);
+        y += 6;
+      };
 
+      if (taxaDeslocamento > 0) addItem("Deslocamento");
+      addItem("Fruteiras de Vidro");
+      addItem("Cardápio personalizado");
+      addItem("Utensílios: Coqueteleiras, dosadores, maceradores, tapetes de bar, facas, entre outros.");
+      addItem("Insumo: Frutas, gelo, xaropes, bebidas.");
+      addItem("Copos: Descartáveis.");
+      doc.text("A equipe é composta por funcionários uniformizados e conta com mão de obra", 15, y); y += 6;
+      doc.text("especializada, incluindo 1 Bartender e 1 auxiliar de bar.", 15, y); y += 10;
+
+      // Cardápio
+      doc.setFont("helvetica", "bold");
+      doc.text("CARDÁPIO", 15, y); y += 6;
+      doc.setFont("helvetica", "normal");
+      addItem("Caipirinha (Cachaça Velho Barreiro, xarope de açúcar e frutas)");
+      addItem("Kiwi");
+      addItem("Morango");
+      addItem("Gin & Tônica (Gin Seagers, água tônica, limão, especiarias)");
+      addItem("Limão Taiti");
+      addItem("Caldo de cana");
+      addItem("Sex On The Beach (Vodka Smirnoff, licor Stock de pêssego, suco natural de laranja, xarope Dilute Granadine)");
+      addItem("Pink Limonade (Sprite, xarope Dilute Pink Limonade)"); y += 6;
+
+      // Pagamento
+      doc.setFont("helvetica", "bold");
+      doc.text("FORMAS DE PAGAMENTO", 15, y); y += 6;
+      doc.setFont("helvetica", "normal");
+      doc.text(`VALOR: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 15, y); y += 8;
+      doc.text("30% do valor para reservar a data, pagamento à vista ou parcelado", 15, y); y += 6;
+      doc.text("em 10x no cartão de crédito! Com saldo até 5 dias antes do evento.", 15, y); y += 6;
+      doc.text("(Juros da máquina ou link fica por conta do contratante).", 15, y); y += 12;
+
+      // Assinatura
+      doc.setFont("helvetica", "bold");
+      doc.text("TIAGO MOURA", 15, y);
+      doc.text("(15) 98131-9356", 15, y + 8);
+      doc.setFont("helvetica", "italic");
+      doc.text("“Você planeja o evento!", 15, y + 20);
+      doc.text("Nós cuidamos do momento que todos vão lembrar.”", 15, y + 26);
+
+      // Rodapé
       doc.setFontSize(9);
       doc.setTextColor(120, 120, 120);
-      const hoje = new Date().toLocaleDateString('pt-BR');
-      doc.text(`Documento gerado em: ${hoje} • Válido por 7 dias`, 105, 285, null, null, "center");
+      doc.text(`Documento gerado em: ${dataHoje} • Válido por 7 dias`, 105, 285, null, null, "center");
 
       doc.save(`Orçamento - ${nome.replace(/\s+/g, '_')}.pdf`);
     }
@@ -391,3 +380,5 @@ Nós cuidamos do momento em que todos vão lembrar.`;
 </body>
 </html>
 
+  src="MEMORANDO%286%29.png"
+  
