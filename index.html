@@ -143,7 +143,7 @@
 
     <div class="input-group">
       <label for="nome">Nome do cliente</label>
-      <input type="text" id="nome" placeholder="Ex: Tiago Moura">
+      <input type="text" id="nome" placeholder="Ex: Ellen Lima">
     </div>
     
     <div class="input-group">
@@ -206,7 +206,6 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    // Variável global para armazenar o valor numérico do orçamento
     let valorTotalNumerico = 0;
 
     const { jsPDF } = window.jspdf;
@@ -277,14 +276,26 @@
       const auxiliares = duplas;
       const copeiros = coposVidro ? duplas : 0;
 
-      let msg = `Olá, ${nome}!\n\nSeu orçamento da Momento Bartenders ficou em R$ ${valorTotalNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} para ${convidados} convidados.\n\n`;
-      msg += `Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
-      msg += `Local: ${localEvento}\n`;
-      msg += `Pacote: ${nomePacote}\n\n`;
+      let msg = `Olá, ${nome}!\n\n`;
+      msg += `Seu orçamento da Momento Bartenders ficou em R$ ${valorTotalNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} para ${convidados} convidados.\n\n`;
+      msg += `📅 Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
+      msg += `📍 Local: ${localEvento}\n`;
+      msg += `📦 Pacote: ${nomePacote}\n\n`;
 
-      if (balcao) msg += '• Balcão incluso\n';
-      if (coposVidro) msg += '• Copos de vidro inclusos\n';
-      if (taxaDeslocamento > 0) msg += '• Taxa de deslocamento aplicada (+R$ 200)\n';
+      msg += `✨ TUDO INCLUSO NO VALOR:\n`;
+      msg += `• Fruteiras de vidro\n`;
+      msg += `• Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.\n`;
+      msg += `• Insumos: frutas, gelo, xaropes e bebidas\n`;
+
+      if (coposVidro) {
+        msg += `• Copos de vidro inclusos\n`;
+        msg += `• Copeiro${copeiros > 1 ? 's' : ''}: ${copeiros}\n`;
+      } else {
+        msg += `• Copos descartáveis\n`;
+      }
+
+      if (balcao) msg += `• Balcão incluso\n`;
+      if (taxaDeslocamento > 0) msg += `• Deslocamento (${distancia} km)\n`;
 
       let equipeTexto = `Equipe: ${bartenders} Bartenders e ${auxiliares} auxiliares de bar`;
       if (copeiros > 0) {
@@ -292,6 +303,7 @@
       }
       equipeTexto += ', uniformizados.';
       msg += `\n${equipeTexto}\n\n`;
+
       msg += `Você planeja o evento!\nNós cuidamos do momento que todos vão lembrar.`;
 
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
