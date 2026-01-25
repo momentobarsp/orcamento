@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Momento Bar - Orçamento</title>
+  <title>Momento Bartenders - Orçamento</title>
   <!-- Fontes elegantes -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <style>
@@ -39,13 +39,6 @@
       font-family: 'Playfair Display', serif;
       font-size: 32px;
       letter-spacing: 1.2px;
-    }
-    h1 {
-      text-align: center;
-      color: #d4af37;
-      margin-bottom: 26px;
-      font-size: 22px;
-      font-weight: 600;
     }
     .input-group {
       margin-bottom: 24px;
@@ -178,44 +171,43 @@
 </head>
 <body>
   <div class="container">
-    <div class="logo">MOMENTO BAR</div>
-    <h1>Orçamento Rápido – Open Bar 5h</h1>
+    <div class="logo">MOMENTO BARTENDERS</div>
 
     <!-- Formulário -->
     <div class="input-group">
-      <label for="nome">👤 Nome do cliente</label>
+      <label for="nome">Nome do cliente</label>
       <input type="text" id="nome" placeholder="Ex: Ana Silva">
     </div>
     
     <div class="input-group">
-      <label for="dataEvento">📅 Data do evento</label>
+      <label for="dataEvento">Data do evento</label>
       <input type="date" id="dataEvento">
     </div>
     
     <div class="input-group">
-      <label for="localEvento">📍 Local do evento</label>
+      <label for="localEvento">Local do evento</label>
       <input type="text" id="localEvento" placeholder="Ex: Rua das Palmeiras, 123 – São Paulo/SP">
     </div>
     
     <div class="input-group">
-      <label for="distancia">🚗 Distância do evento (km)</label>
+      <label for="distancia">Distância do evento (km)</label>
       <input type="number" id="distancia" min="0" value="0" placeholder="Ex: 25">
     </div>
     
     <div class="input-group">
-      <label for="pacote">🍸 Escolha o pacote</label>
+      <label for="pacote">Escolha o pacote</label>
       <select id="pacote">
         <option value="36.20">Tropical Classic</option>
         <option value="39.00">Mistura Contemporânea</option>
         <option value="39.80">Summer Fresh</option>
         <option value="48.00">Sunset Experience</option>
-        <option value="55.00">Ousados &amp; Refrescantes</option>
+        <option value="55.00">Ousados & Refrescantes</option>
         <option value="57.00">Clássicos Sofisticados</option>
       </select>
     </div>
     
     <div class="input-group">
-      <label for="convidados">👥 Número de convidados</label>
+      <label for="convidados">Número de convidados</label>
       <input type="number" id="convidados" min="1" value="50">
     </div>
     
@@ -233,12 +225,12 @@
 
     <!-- Resultado -->
     <div id="result" class="result">
-      <p>✅ Orçamento estimado para:</p>
+      <p>Orçamento estimado para:</p>
       <p id="cliente">Cliente</p>
       <div id="total">R$ 0,00</div>
 
       <div class="preview">
-        <div class="preview-title">📝 Pré-visualização da mensagem:</div>
+        <div class="preview-title">Pré-visualização da mensagem:</div>
         <pre id="previewText"></pre>
       </div>
 
@@ -247,14 +239,13 @@
         <button class="whatsapp-btn" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
       </div>
 
-      <button class="pdf-btn" onclick="gerarPDF()">📄 Gerar PDF</button>
+      <button class="pdf-btn" onclick="gerarPDF()">Gerar PDF</button>
     </div>
   </div>
 
   <!-- jsPDF para gerar PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    // Carrega jsPDF corretamente
     const { jsPDF } = window.jspdf;
 
     function formatarDataBR(dataISO) {
@@ -330,23 +321,23 @@
     function gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total) {
       const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : 'Data não informada';
       const deslocamentoTexto = distancia > 20 
-        ? `• Deslocamento (${distancia} km) – taxa de R$ 200 aplicada\n` 
-        : `• Deslocamento (${distancia} km) – sem taxa (até 20 km)\n`;
+        ? '• Deslocamento (' + distancia + ' km) – taxa de R$ 200 aplicada\n' 
+        : '• Deslocamento (' + distancia + ' km) – sem taxa (até 20 km)\n';
 
       let extrasTexto = '';
       if (balcao) extrasTexto += '• Balcão incluso\n';
       if (coposVidro) extrasTexto += '• Copos de vidro inclusos\n';
 
-      return `Olá, ${nome}! 🍸
+      return `Olá, ${nome}!
 
-Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidados.
+Seu orçamento da Momento Bartenders ficou em ${total} para ${convidados} convidados.
 
-📅 Data do evento: ${dataFormatada}
-📍 Local: ${localEvento}
-🚗 Distância: ${distancia} km
-📦 Pacote escolhido: ${nomePacote}
+Data do evento: ${dataFormatada}
+Local: ${localEvento}
+Distância: ${distancia} km
+Pacote escolhido: ${nomePacote}
 
-✨ TUDO INCLUSO NO VALOR:
+TUDO INCLUSO NO VALOR:
 • Bebidas
 • Xaropes, frutas frescas, gelo
 • Copos descartáveis
@@ -355,11 +346,10 @@ Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidado
 • Limpeza completa após o evento
 
 ${extrasTexto}${deslocamentoTexto}
-Você planeja o evento!  
-Nós cuidamos do momento em que todos vão lembrar. 😊`;
+Você planeja o evento!
+Nós cuidamos do momento em que todos vão lembrar.`;
     }
 
-    // Função para gerar PDF
     function gerarPDF() {
       const nome = document.getElementById('nome').value || 'Cliente';
       const dataEvento = document.getElementById('dataEvento').value;
@@ -372,47 +362,28 @@ Nós cuidamos do momento em que todos vão lembrar. 😊`;
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = document.getElementById('total').textContent;
 
+      const mensagem = gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total);
+
       const doc = new jsPDF();
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(22);
-      doc.setTextColor(50, 50, 50);
-      doc.text("MOMENTO BAR", 105, 20, null, null, "center");
-
-      doc.setFontSize(16);
+      doc.setFontSize(18);
+      doc.text("MOMENTO BARTENDERS", 105, 15, null, null, "center");
       doc.setFont("helvetica", "normal");
-      doc.text("Orçamento de Serviço – Open Bar 5h", 105, 30, null, null, "center");
+      doc.setFontSize(12);
+      doc.text("Orçamento Oficial – Open Bar 5h", 105, 22, null, null, "center");
 
       doc.setDrawColor(212, 175, 55);
-      doc.line(20, 35, 190, 35);
+      doc.line(15, 26, 195, 26);
 
-      let y = 45;
-      const addLine = (label, value) => {
-        doc.setFont("helvetica", "bold");
-        doc.text(label, 20, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(value, 80, y);
-        y += 8;
-      };
+      const splitText = doc.splitTextToSize(mensagem, 180);
+      doc.setFontSize(11);
+      doc.setTextColor(30, 30, 30);
+      doc.text(splitText, 15, 32);
 
-      addLine("Cliente:", nome);
-      addLine("Data:", dataEvento ? formatarDataBR(dataEvento) : "Não informada");
-      addLine("Local:", localEvento);
-      addLine("Distância:", `${distancia} km`);
-      addLine("Pacote:", nomePacote);
-      addLine("Convidados:", convidados.toString());
-
-      if (balcao) addLine("Extra:", "Balcão incluso (+R$ 250)");
-      if (coposVidro) addLine("Extra:", "Copos de vidro (+R$ 350)");
-      if (taxaDeslocamento > 0) addLine("Extra:", "Taxa de deslocamento (+R$ 200)");
-
-      doc.setFontSize(18);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(180, 120, 30);
-      doc.text(`Total: ${total}`, 105, y + 15, null, null, "center");
-
-      doc.setFontSize(10);
-      doc.setTextColor(100, 100, 100);
-      doc.text("Este orçamento é válido por 7 dias.", 105, y + 25, null, null, "center");
+      doc.setFontSize(9);
+      doc.setTextColor(120, 120, 120);
+      const hoje = new Date().toLocaleDateString('pt-BR');
+      doc.text(`Documento gerado em: ${hoje} • Válido por 7 dias`, 105, 285, null, null, "center");
 
       doc.save(`Orçamento - ${nome.replace(/\s+/g, '_')}.pdf`);
     }
