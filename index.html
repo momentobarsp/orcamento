@@ -4,12 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Momento Bar - Orçamento</title>
+  <!-- Fontes elegantes -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Montserrat', sans-serif;
     }
     body {
       background: #121212;
@@ -23,103 +25,114 @@
     .container {
       background: #1e1e1e;
       border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
       width: 100%;
-      max-width: 500px;
-      padding: 30px;
+      max-width: 520px;
+      padding: 32px;
+      position: relative;
     }
     .logo {
       text-align: center;
-      margin-bottom: 15px;
-      font-weight: bold;
+      margin-bottom: 18px;
+      font-weight: 600;
       color: #d4af37;
-      font-size: 28px;
-      letter-spacing: 1px;
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      letter-spacing: 1.2px;
     }
     h1 {
       text-align: center;
       color: #d4af37;
-      margin-bottom: 25px;
+      margin-bottom: 26px;
       font-size: 22px;
+      font-weight: 600;
     }
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: #ffffff;
       font-weight: 600;
+      font-size: 15px;
     }
     input[type="text"],
     input[type="number"],
     input[type="date"],
     select {
       width: 100%;
-      padding: 12px;
+      padding: 13px;
       border: 2px solid #444;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 16px;
       background: #2d2d2d;
       color: white;
-      transition: border-color 0.3s;
+      transition: all 0.3s;
     }
     input:focus, select:focus {
       border-color: #d4af37;
       outline: none;
       background: #333;
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
     }
     .checkbox-group {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
     }
     .checkbox-group input {
       width: auto;
-      margin-right: 10px;
+      margin-right: 12px;
       margin-top: 4px;
     }
     button {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       background: #d4af37;
       color: #121212;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s;
+      margin-bottom: 12px;
     }
     button:hover {
       background: #b8952e;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
     }
     #result {
-      margin-top: 25px;
-      padding: 20px;
-      background: #2d2d2d;
-      border-radius: 12px;
+      margin-top: 28px;
+      padding: 24px;
+      background: #252525;
+      border-radius: 14px;
       text-align: center;
-      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s, transform 0.4s;
     }
     #result.show {
-      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
     #total {
-      font-size: 28px;
-      font-weight: bold;
+      font-size: 30px;
+      font-weight: 700;
       color: #d4af37;
-      margin: 10px 0;
+      margin: 12px 0;
     }
     .btn-group {
       display: flex;
-      gap: 10px;
-      margin-top: 15px;
+      gap: 12px;
+      margin-top: 20px;
     }
     .btn-group button {
-      flex: 1;
       font-size: 14px;
-      padding: 10px;
+      padding: 11px;
+      margin-bottom: 0;
     }
     .whatsapp-btn {
       background: #25D366;
@@ -127,53 +140,70 @@
     }
     .whatsapp-btn:hover {
       background: #128C7E;
+      transform: translateY(-2px);
+    }
+    .pdf-btn {
+      background: #5d4037;
+      color: white;
+    }
+    .pdf-btn:hover {
+      background: #3e2723;
+      transform: translateY(-2px);
     }
     .preview {
-      background: #333;
-      border: 1px solid #555;
-      padding: 15px;
+      background: #2a2a2a;
+      border-left: 4px solid #d4af37;
+      padding: 16px;
       border-radius: 8px;
-      margin-top: 15px;
+      margin-top: 20px;
       display: none;
     }
     .preview.show {
       display: block;
     }
     .preview-title {
-      font-weight: bold;
+      font-weight: 700;
       color: #d4af37;
       margin-bottom: 10px;
+      font-size: 16px;
+    }
+    .preview pre {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #e0e0e0;
+      white-space: pre-wrap;
+      text-align: left;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">MOMENTO BAR</div>
-    <h1>Orçamento Rápido</h1>
+    <h1>Orçamento Rápido – Open Bar 5h</h1>
 
     <!-- Formulário -->
     <div class="input-group">
-      <label for="nome">Nome do cliente</label>
+      <label for="nome">👤 Nome do cliente</label>
       <input type="text" id="nome" placeholder="Ex: Ana Silva">
     </div>
     
     <div class="input-group">
-      <label for="dataEvento">Data do evento</label>
+      <label for="dataEvento">📅 Data do evento</label>
       <input type="date" id="dataEvento">
     </div>
     
     <div class="input-group">
-      <label for="localEvento">Local do evento</label>
+      <label for="localEvento">📍 Local do evento</label>
       <input type="text" id="localEvento" placeholder="Ex: Rua das Palmeiras, 123 – São Paulo/SP">
     </div>
     
     <div class="input-group">
-      <label for="distancia">Distância do evento (km)</label>
+      <label for="distancia">🚗 Distância do evento (km)</label>
       <input type="number" id="distancia" min="0" value="0" placeholder="Ex: 25">
     </div>
     
     <div class="input-group">
-      <label for="pacote">Escolha o pacote</label>
+      <label for="pacote">🍸 Escolha o pacote</label>
       <select id="pacote">
         <option value="36.20">Tropical Classic</option>
         <option value="39.00">Mistura Contemporânea</option>
@@ -185,7 +215,7 @@
     </div>
     
     <div class="input-group">
-      <label for="convidados">Número de convidados</label>
+      <label for="convidados">👥 Número de convidados</label>
       <input type="number" id="convidados" min="1" value="50">
     </div>
     
@@ -207,20 +237,26 @@
       <p id="cliente">Cliente</p>
       <div id="total">R$ 0,00</div>
 
-      <!-- Pré-visualização -->
-      <div id="preview" class="preview">
+      <div class="preview">
         <div class="preview-title">📝 Pré-visualização da mensagem:</div>
-        <pre id="previewText" style="background: #444; padding: 10px; border-radius: 5px; white-space: pre-wrap; text-align: left; color: white;"></pre>
+        <pre id="previewText"></pre>
       </div>
 
       <div class="btn-group">
         <button onclick="copiarValor()">Copiar valor</button>
         <button class="whatsapp-btn" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
       </div>
+
+      <button class="pdf-btn" onclick="gerarPDF()">📄 Gerar PDF</button>
     </div>
   </div>
 
+  <!-- jsPDF para gerar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
+    // Carrega jsPDF corretamente
+    const { jsPDF } = window.jspdf;
+
     function formatarDataBR(dataISO) {
       if (!dataISO) return '';
       const [ano, mes, dia] = dataISO.split('-');
@@ -321,6 +357,64 @@ Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidado
 ${extrasTexto}${deslocamentoTexto}
 Você planeja o evento!  
 Nós cuidamos do momento em que todos vão lembrar. 😊`;
+    }
+
+    // Função para gerar PDF
+    function gerarPDF() {
+      const nome = document.getElementById('nome').value || 'Cliente';
+      const dataEvento = document.getElementById('dataEvento').value;
+      const localEvento = document.getElementById('localEvento').value || 'Não informado';
+      const distancia = parseFloat(document.getElementById('distancia').value) || 0;
+      const convidados = parseInt(document.getElementById('convidados').value) || 0;
+      const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
+      const balcao = document.getElementById('balcao').checked;
+      const coposVidro = document.getElementById('coposVidro').checked;
+      const taxaDeslocamento = distancia > 20 ? 200 : 0;
+      const total = document.getElementById('total').textContent;
+
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
+      doc.setTextColor(50, 50, 50);
+      doc.text("MOMENTO BAR", 105, 20, null, null, "center");
+
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "normal");
+      doc.text("Orçamento de Serviço – Open Bar 5h", 105, 30, null, null, "center");
+
+      doc.setDrawColor(212, 175, 55);
+      doc.line(20, 35, 190, 35);
+
+      let y = 45;
+      const addLine = (label, value) => {
+        doc.setFont("helvetica", "bold");
+        doc.text(label, 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(value, 80, y);
+        y += 8;
+      };
+
+      addLine("Cliente:", nome);
+      addLine("Data:", dataEvento ? formatarDataBR(dataEvento) : "Não informada");
+      addLine("Local:", localEvento);
+      addLine("Distância:", `${distancia} km`);
+      addLine("Pacote:", nomePacote);
+      addLine("Convidados:", convidados.toString());
+
+      if (balcao) addLine("Extra:", "Balcão incluso (+R$ 250)");
+      if (coposVidro) addLine("Extra:", "Copos de vidro (+R$ 350)");
+      if (taxaDeslocamento > 0) addLine("Extra:", "Taxa de deslocamento (+R$ 200)");
+
+      doc.setFontSize(18);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(180, 120, 30);
+      doc.text(`Total: ${total}`, 105, y + 15, null, null, "center");
+
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text("Este orçamento é válido por 7 dias.", 105, y + 25, null, null, "center");
+
+      doc.save(`Orçamento - ${nome.replace(/\s+/g, '_')}.pdf`);
     }
   </script>
 </body>
