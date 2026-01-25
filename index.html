@@ -148,7 +148,7 @@
     
     <div class="input-group">
       <label for="localEvento">Local do evento</label>
-      <input type="text" id="localEvento" placeholder="Ex: Sorocaba, SP">
+      <input type="text" id="localEvento" placeholder="Ex: Tatuí, SP">
     </div>
     
     <div class="input-group">
@@ -208,6 +208,16 @@
   <script>
     let valorTotalNumerico = 0;
 
+    // ✅ DRINKS POR PACOTE — com nomes corrigidos
+    const DRINKS_POR_PACOTE = {
+      "36.20": ["Caipirinha", "Caipirosca", "Saquerita", "Mocktail de Frutas"],
+      "39.00": ["Caipirinha", "Caipirosca", "Moscow Mule", "Soda italiana"],
+      "39.80": ["Mojito", "Caipirosca", "Gin&Tônica", "Pink Limonade"],
+      "48.00": ["Sex On The Beach", "Whisky Sour", "Aperol Spritz", "Mocktail de Frutas"],
+      "55.00": ["Caiperol", "Caipirosca", "Aperol Spritz", "Pink Limonade"],
+      "57.00": ["Negroni", "Aperol Spritz", "Gin&Tônica", "Piña Colada"]
+    };
+
     const { jsPDF } = window.jspdf;
 
     function formatarDataBR(dataISO) {
@@ -266,6 +276,7 @@
       const dataEvento = document.getElementById('dataEvento').value;
       const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
+      const valorPacote = document.getElementById('pacote').value;
       const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
@@ -276,6 +287,11 @@
       const auxiliares = duplas;
       const copeiros = coposVidro ? duplas : 0;
 
+      const drinks = DRINKS_POR_PACOTE[valorPacote] || [];
+      const drinksTexto = drinks.length > 0 
+        ? `• Drinks inclusos: ${drinks.join(', ')}\n` 
+        : '';
+
       let msg = `Olá, ${nome}!\n\n`;
       msg += `Seu orçamento da Momento Bartenders ficou em R$ ${valorTotalNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} para ${convidados} convidados.\n\n`;
       msg += `📅 Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
@@ -283,6 +299,7 @@
       msg += `📦 Pacote: ${nomePacote}\n\n`;
 
       msg += `✨ TUDO INCLUSO NO VALOR:\n`;
+      msg += drinksTexto;
       msg += `• Fruteiras de vidro\n`;
       msg += `• Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.\n`;
       msg += `• Insumos: frutas, gelo, xaropes e bebidas\n`;
@@ -315,6 +332,7 @@
       const dataEvento = document.getElementById('dataEvento').value;
       const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
+      const valorPacote = document.getElementById('pacote').value;
       const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
@@ -324,6 +342,8 @@
       const bartenders = duplas;
       const auxiliares = duplas;
       const copeiros = coposVidro ? duplas : 0;
+
+      const drinks = DRINKS_POR_PACOTE[valorPacote] || [];
 
       const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : '';
       const dataHoje = new Date().toLocaleDateString('pt-BR');
@@ -340,7 +360,6 @@
       doc.setTextColor(0, 0, 0);
       doc.text(`ORÇAMENTO BAR DE DRINKS`, 15, 40);
 
-      // Objetivo
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.text("OBJETIVO", 15, 55);
@@ -348,15 +367,20 @@
       doc.text("Open bar de drinks, no qual a nossa empresa se responsabilizará por todo preparo e", 15, 62);
       doc.text("mão de obra pelo bar de drinks no evento.", 15, 68);
 
-      // Proposta
       doc.setFont("helvetica", "bold");
       doc.text("PROPOSTA", 15, 82);
       doc.setFont("helvetica", "normal");
       doc.text(`Open Bar de 5 Horas para aproximadamente ${convidados} pessoas.`, 15, 89);
-      doc.text(`Pacote selecionado: ${nomePacote}`, 15, 95); // ✅ PACOTE AGORA APARECE AQUI
-      doc.text("Incluso no valor:", 15, 101);
+      doc.text(`Pacote selecionado: ${nomePacote}`, 15, 95);
 
-      let y = 108;
+      let y = 101;
+      if (drinks.length > 0) {
+        doc.text(`Drinks inclusos: ${drinks.join(', ')}`, 15, 95);
+        y = 101;
+      }
+
+      doc.text("Incluso no valor:", 15, y); y += 6;
+
       const addItem = (item) => {
         doc.text(`• ${item}`, 20, y);
         y += 6;
@@ -383,7 +407,6 @@
       equipeTexto += ", uniformizados.";
       doc.text(equipeTexto, 15, y); y += 12;
 
-      // Pagamento
       doc.setFont("helvetica", "bold");
       doc.text("FORMAS DE PAGAMENTO", 15, y); y += 6;
       doc.setFont("helvetica", "normal");
@@ -393,7 +416,6 @@
       doc.text("Saldo deve ser quitado até 5 dias antes do evento.", 15, y); y += 6;
       doc.text("(Juros da máquina ou link ficam por conta do contratante).", 15, y); y += 12;
 
-      // Assinatura
       doc.setFont("helvetica", "bold");
       doc.text("TIAGO MOURA", 15, y);
       doc.text("(15) 98131-9356", 15, y + 8);
@@ -401,7 +423,6 @@
       doc.text("“Você planeja o evento!", 15, y + 20);
       doc.text("Nós cuidamos do momento que todos vão lembrar.”", 15, y + 26);
 
-      // Rodapé
       doc.setFontSize(9);
       doc.setTextColor(120, 120, 120);
       doc.text(`Documento gerado em: ${dataHoje} • Válido por 7 dias`, 105, 285, null, null, "center");
