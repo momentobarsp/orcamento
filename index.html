@@ -268,6 +268,14 @@
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = document.getElementById('total').textContent;
 
+      // 🔢 Equipe principal
+      const duplas = Math.ceil(convidados / 50);
+      const bartenders = duplas;
+      const auxiliares = duplas;
+
+      // 🔢 Copeiros (só se copos de vidro estiverem marcados)
+      const copeiros = coposVidro ? duplas : 0;
+
       let msg = `Olá, ${nome}!\n\nSeu orçamento da Momento Bartenders ficou em ${total} para ${convidados} convidados.\n\n`;
       msg += `Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
       msg += `Local: ${localEvento}\n`;
@@ -277,7 +285,12 @@
       if (coposVidro) msg += '• Copos de vidro inclusos\n';
       if (taxaDeslocamento > 0) msg += '• Taxa de deslocamento aplicada (+R$ 200)\n';
 
-      msg += `\nVocê planeja o evento!\nNós cuidamos do momento que todos vão lembrar.`;
+      msg += `\nEquipe: ${bartenders} Bartenders e ${auxiliares} auxiliares de bar`;
+      if (copeiros > 0) {
+        msg += `, além de ${copeiros} copeiro${copeiros > 1 ? 's' : ''}`;
+      }
+      msg += ', uniformizados e especializados.\n\n';
+      msg += `Você planeja o evento!\nNós cuidamos do momento que todos vão lembrar.`;
 
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
@@ -293,6 +306,11 @@
       const coposVidro = document.getElementById('coposVidro').checked;
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = parseFloat(document.getElementById('total').textContent.replace(/\D/g, '').replace(/^(\d+)(\d{2})$/, '$1.$2')) || 0;
+
+      const duplas = Math.ceil(convidados / 50);
+      const bartenders = duplas;
+      const auxiliares = duplas;
+      const copeiros = coposVidro ? duplas : 0;
 
       const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : '';
       const dataHoje = new Date().toLocaleDateString('pt-BR');
@@ -336,8 +354,18 @@
       addItem("Insumos: frutas, gelo, xaropes e bebidas");
       addItem("Copos descartáveis");
       if (balcao) addItem("Balcão incluso");
-      if (coposVidro) addItem("Copos de vidro inclusos");
-      doc.text("Equipe: 1 Bartender e 1 auxiliar de bar, uniformizados e especializados.", 15, y); y += 12;
+      if (coposVidro) {
+        addItem("Copos de vidro inclusos");
+        addItem(`Copeiro${copeiros > 1 ? 's' : ''}: ${copeiros}`);
+      }
+
+      // Equipe principal
+      let equipeTexto = `Equipe: ${bartenders} Bartenders e ${auxiliares} auxiliares de bar`;
+      if (copeiros > 0) {
+        equipeTexto += `, além de ${copeiros} copeiro${copeiros > 1 ? 's' : ''}`;
+      }
+      equipeTexto += ", uniformizados e especializados.";
+      doc.text(equipeTexto, 15, y); y += 12;
 
       // Pagamento
       doc.setFont("helvetica", "bold");
