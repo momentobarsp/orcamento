@@ -268,12 +268,9 @@
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = document.getElementById('total').textContent;
 
-      // 🔢 Equipe principal
       const duplas = Math.ceil(convidados / 50);
       const bartenders = duplas;
       const auxiliares = duplas;
-
-      // 🔢 Copeiros (só se copos de vidro estiverem marcados)
       const copeiros = coposVidro ? duplas : 0;
 
       let msg = `Olá, ${nome}!\n\nSeu orçamento da Momento Bartenders ficou em ${total} para ${convidados} convidados.\n\n`;
@@ -352,12 +349,16 @@
       addItem("Fruteiras de vidro");
       addItem("Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.");
       addItem("Insumos: frutas, gelo, xaropes e bebidas");
-      addItem("Copos descartáveis");
-      if (balcao) addItem("Balcão incluso");
+      
+      // ➕ Copos: mostra só um dos dois
       if (coposVidro) {
         addItem("Copos de vidro inclusos");
         addItem(`Copeiro${copeiros > 1 ? 's' : ''}: ${copeiros}`);
+      } else {
+        addItem("Copos descartáveis");
       }
+      
+      if (balcao) addItem("Balcão incluso");
 
       // Equipe principal
       let equipeTexto = `Equipe: ${bartenders} Bartenders e ${auxiliares} auxiliares de bar`;
@@ -395,4 +396,3 @@
   </script>
 </body>
 </html>
-
