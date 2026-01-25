@@ -53,7 +53,8 @@
     }
     input[type="text"],
     input[type="number"],
-    input[type="date"] {
+    input[type="date"],
+    select {
       width: 100%;
       padding: 12px;
       border: 2px solid #444;
@@ -63,7 +64,7 @@
       color: white;
       transition: border-color 0.3s;
     }
-    input:focus {
+    input:focus, select:focus {
       border-color: #d4af37;
       outline: none;
       background: #333;
@@ -127,26 +128,6 @@
     .whatsapp-btn:hover {
       background: #128C7E;
     }
-    .admin-panel {
-      background: #2d2d2d;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      display: none;
-    }
-    .admin-panel h3 {
-      color: #ff5722;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    .admin-panel .input-group {
-      margin-bottom: 10px;
-    }
-    .admin-panel label {
-      font-weight: normal;
-      font-size: 14px;
-      color: white;
-    }
     .preview {
       background: #333;
       border: 1px solid #555;
@@ -170,35 +151,6 @@
     <div class="logo">MOMENTO BAR</div>
     <h1>Orçamento Rápido – Open Bar 5h</h1>
 
-    <!-- Botão Admin -->
-    <button onclick="toggleAdmin()" style="background: #444; font-size: 12px; padding: 8px;">[ADMIN] Clique 5x</button>
-
-    <!-- Painel Admin -->
-    <div id="adminPanel" class="admin-panel">
-      <h3>⚙️ Configurações Administrativas</h3>
-      <div class="input-group">
-        <label>Preço por pessoa (R$)</label>
-        <input type="number" id="precoPessoa" value="35" step="1">
-      </div>
-      <div class="input-group">
-        <label>Valor mínimo (R$)</label>
-        <input type="number" id="valorMinimo" value="1800" step="1">
-      </div>
-      <div class="input-group">
-        <label>Balcão (+R$)</label>
-        <input type="number" id="extraBalcao" value="250" step="1">
-      </div>
-      <div class="input-group">
-        <label>Copos de vidro (+R$)</label>
-        <input type="number" id="extraCoposVidro" value="350" step="1">
-      </div>
-      <div class="input-group">
-        <label>Deslocamento (+R$)</label>
-        <input type="number" id="extraDeslocamento" value="200" step="1">
-      </div>
-      <button onclick="saveConfig()">Salvar Configurações</button>
-    </div>
-
     <!-- Formulário -->
     <div class="input-group">
       <label for="nome">Nome do cliente</label>
@@ -216,23 +168,35 @@
     </div>
     
     <div class="input-group">
+      <label for="pacote">Escolha o pacote</label>
+      <select id="pacote">
+        <option value="36.20">Tropical Classic</option>
+        <option value="39.00">Mistura Contemporânea</option>
+        <option value="39.80">Summer Fresh</option>
+        <option value="48.00">Sunset Experience</option>
+        <option value="55.00">Ousados &amp; Refrescantes</option>
+        <option value="57.00">Clássicos Sofisticados</option>
+      </select>
+    </div>
+    
+    <div class="input-group">
       <label for="convidados">Número de convidados</label>
       <input type="number" id="convidados" min="1" value="50">
     </div>
     
     <div class="checkbox-group">
       <input type="checkbox" id="balcao">
-      <label for="balcao">Balcão incluso</label>
+      <label for="balcao">Balcão incluso (+R$ 250)</label>
     </div>
     
     <div class="checkbox-group">
       <input type="checkbox" id="coposVidro">
-      <label for="coposVidro">Copos de vidro</label>
+      <label for="coposVidro">Copos de vidro (+R$ 350)</label>
     </div>
     
     <div class="checkbox-group">
       <input type="checkbox" id="deslocamento">
-      <label for="deslocamento">Deslocamento (>30km)</label>
+      <label for="deslocamento">Deslocamento (>30km) (+R$ 200)</label>
     </div>
     
     <button onclick="calcular()">CALCULAR ORÇAMENTO</button>
@@ -257,46 +221,6 @@
   </div>
 
   <script>
-    // === CONFIGURAÇÃO INICIAL ===
-    let config = {
-      precoPorPessoa: 35,
-      valorMinimo: 1800,
-      extras: {
-        balcao: 250,
-        coposVidro: 350,
-        deslocamento: 200
-      }
-    };
-
-    if (localStorage.getItem('momentoBarConfig')) {
-      config = JSON.parse(localStorage.getItem('momentoBarConfig'));
-      document.getElementById('precoPessoa').value = config.precoPorPessoa;
-      document.getElementById('valorMinimo').value = config.valorMinimo;
-      document.getElementById('extraBalcao').value = config.extras.balcao;
-      document.getElementById('extraCoposVidro').value = config.extras.coposVidro;
-      document.getElementById('extraDeslocamento').value = config.extras.deslocamento;
-    }
-
-    let adminClickCount = 0;
-    function toggleAdmin() {
-      adminClickCount++;
-      if (adminClickCount >= 5) {
-        document.getElementById('adminPanel').style.display = 'block';
-        adminClickCount = 0;
-      }
-    }
-
-    function saveConfig() {
-      config.precoPorPessoa = parseInt(document.getElementById('precoPessoa').value) || 35;
-      config.valorMinimo = parseInt(document.getElementById('valorMinimo').value) || 1800;
-      config.extras.balcao = parseInt(document.getElementById('extraBalcao').value) || 250;
-      config.extras.coposVidro = parseInt(document.getElementById('extraCoposVidro').value) || 350;
-      config.extras.deslocamento = parseInt(document.getElementById('extraDeslocamento').value) || 200;
-
-      localStorage.setItem('momentoBarConfig', JSON.stringify(config));
-      alert('Configurações salvas!');
-    }
-
     function formatarDataBR(dataISO) {
       if (!dataISO) return '';
       const [ano, mes, dia] = dataISO.split('-');
@@ -308,6 +232,9 @@
       const dataEvento = document.getElementById('dataEvento').value;
       const localEvento = document.getElementById('localEvento').value || 'Não informado';
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
+      const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
+      const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
+      
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
       const deslocamento = document.getElementById('deslocamento').checked;
@@ -317,14 +244,13 @@
         return;
       }
       
-      const { precoPorPessoa, valorMinimo } = config;
-      const limiteMinimo = Math.floor(valorMinimo / precoPorPessoa);
-      let valorBase = convidados <= limiteMinimo ? valorMinimo : convidados * precoPorPessoa;
+      let valorBase = convidados * precoPorPessoa;
+      if (valorBase < 1800) valorBase = 1800;
       
       let extras = 0;
-      if (balcao) extras += config.extras.balcao;
-      if (coposVidro) extras += config.extras.coposVidro;
-      if (deslocamento) extras += config.extras.deslocamento;
+      if (balcao) extras += 250;
+      if (coposVidro) extras += 350;
+      if (deslocamento) extras += 200;
       
       const total = valorBase + extras;
       
@@ -332,7 +258,7 @@
       document.getElementById('total').textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
       document.getElementById('result').classList.add('show');
 
-      const previewMsg = gerarMensagem(nome, dataEvento, localEvento, convidados, balcao, coposVidro, deslocamento, total);
+      const previewMsg = gerarMensagem(nome, dataEvento, localEvento, convidados, nomePacote, balcao, coposVidro, deslocamento, total);
       document.getElementById('previewText').textContent = previewMsg;
       document.getElementById('preview').classList.add('show');
     }
@@ -351,40 +277,43 @@
       const dataEvento = document.getElementById('dataEvento').value;
       const localEvento = document.getElementById('localEvento').value || 'Não informado';
       const convidados = document.getElementById('convidados').value;
+      const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
+      
       const balcao = document.getElementById('balcao').checked ? 'Sim' : 'Não';
       const coposVidro = document.getElementById('coposVidro').checked ? 'Sim' : 'Não';
       const deslocamento = document.getElementById('deslocamento').checked ? 'Sim' : 'Não';
       const total = document.getElementById('total').textContent;
 
-      const mensagem = gerarMensagem(nome, dataEvento, localEvento, convidados, balcao, coposVidro, deslocamento, total);
+      const mensagem = gerarMensagem(nome, dataEvento, localEvento, convidados, nomePacote, balcao, coposVidro, deslocamento, total);
 
       const url = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
       window.open(url, '_blank');
     }
 
-    function gerarMensagem(nome, dataEvento, localEvento, convidados, balcao, coposVidro, deslocamento, total) {
+    function gerarMensagem(nome, dataEvento, localEvento, convidados, nomePacote, balcao, coposVidro, deslocamento, total) {
       const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : 'Data não informada';
       return `Olá, ${nome}! 🍸
 
-Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidados.
+Seu orçamento da **Momento Bar** ficou em **${total}** para ${convidados} convidados.
 
 📅 Data do evento: ${dataFormatada}
 📍 Local: ${localEvento}
+📦 Pacote escolhido: ${nomePacote}
 
 ✨ TUDO INCLUSO NO VALOR:
 • Bebidas
 • Xaropes, frutas frescas, gelo
-• Copos descartáveis 
+• Copos descartáveis
 • Bartenders profissionais (5h de open bar)
 • Fruteiras, balde de gelo e todos os utensílios
 • Limpeza completa após o evento
 
-${balcao ? '• Balcão incluso\n' : ''}
-${coposVidro ? '• Copos de vidro inclusos\n' : ''}
-${deslocamento ? '• Deslocamento (>30km) incluso\n' : ''}
+${balcao === 'Sim' ? '• Balcão incluso\n' : ''}
+${coposVidro === 'Sim' ? '• Copos de vidro inclusos\n' : ''}
+${deslocamento === 'Sim' ? '• Deslocamento (>30km) incluso\n' : ''}
 
-Você planeja o evento, agente cuida do momento que todos vão lembrar!  
-Aguardo um retorno! 😊`;
+Você planeja o evento!  
+Nós cuidamos do momento em que todos vão lembrar. 😊`;
     }
   </script>
 </body>
