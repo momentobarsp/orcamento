@@ -168,6 +168,11 @@
     </div>
     
     <div class="input-group">
+      <label for="distancia">Distância do evento (km)</label>
+      <input type="number" id="distancia" min="0" value="0" placeholder="Ex: 25">
+    </div>
+    
+    <div class="input-group">
       <label for="pacote">Escolha o pacote</label>
       <select id="pacote">
         <option value="36.20">Tropical Classic</option>
@@ -192,11 +197,6 @@
     <div class="checkbox-group">
       <input type="checkbox" id="coposVidro">
       <label for="coposVidro">Copos de vidro (+R$ 350)</label>
-    </div>
-    
-    <div class="checkbox-group">
-      <input type="checkbox" id="deslocamento">
-      <label for="deslocamento">Deslocamento (>30km) (+R$ 200)</label>
     </div>
     
     <button onclick="calcular()">CALCULAR ORÇAMENTO</button>
@@ -231,13 +231,13 @@
       const nome = document.getElementById('nome').value || 'Cliente';
       const dataEvento = document.getElementById('dataEvento').value;
       const localEvento = document.getElementById('localEvento').value || 'Não informado';
+      const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
       const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
       const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
       
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
-      const deslocamento = document.getElementById('deslocamento').checked;
       
       if (convidados <= 0) {
         alert('Por favor, insira um número válido de convidados.');
@@ -251,13 +251,15 @@
       if (balcao) extras += 250;
       if (coposVidro) extras += 350;
       
-      const total = valorBase + extras;
+      // ✅ Cobre R$ 200 SOMENTE se distância > 20 km
+      const taxaDeslocamento = distancia > 20 ? 200 : 0;
+      const total = valorBase + extras + taxaDeslocamento;
       
       document.getElementById('cliente').textContent = nome;
       document.getElementById('total').textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
       document.getElementById('result').classList.add('show');
 
-      const previewMsg = gerarMensagem(nome, dataEvento, localEvento, convidados, nomePacote, balcao, coposVidro, deslocamento, total);
+      const previewMsg = gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total);
       document.getElementById('previewText').textContent = previewMsg;
       document.getElementById('preview').classList.add('show');
     }
@@ -275,28 +277,34 @@
       const nome = document.getElementById('nome').value || 'Cliente';
       const dataEvento = document.getElementById('dataEvento').value;
       const localEvento = document.getElementById('localEvento').value || 'Não informado';
+      const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = document.getElementById('convidados').value;
       const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
       
       const balcao = document.getElementById('balcao').checked ? 'Sim' : 'Não';
       const coposVidro = document.getElementById('coposVidro').checked ? 'Sim' : 'Não';
-      const deslocamento = document.getElementById('deslocamento').checked ? 'Sim' : 'Não';
+      const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = document.getElementById('total').textContent;
 
-      const mensagem = gerarMensagem(nome, dataEvento, localEvento, convidados, nomePacote, balcao, coposVidro, deslocamento, total);
+      const mensagem = gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total);
 
       const url = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
       window.open(url, '_blank');
     }
 
-    function gerarMensagem(nome, dataEvento, localEvento, convidados, nomePacote, balcao, coposVidro, deslocamento, total) {
+    function gerarMensagem(nome, dataEvento, localEvento, distancia, convidados, nomePacote, balcao, coposVidro, taxaDeslocamento, total) {
       const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : 'Data não informada';
+      const deslocamentoTexto = distancia > 20 
+        ? `• Deslocamento (${distancia} km) – taxa de R$ 200 aplicada\n` 
+        : `• Deslocamento (${distancia} km) – sem taxa (até 20 km)\n`;
+      
       return `Olá, ${nome}! 🍸
 
 Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidados.
 
 📅 Data do evento: ${dataFormatada}
 📍 Local: ${localEvento}
+🚗 Distância: ${distancia} km
 📦 Pacote escolhido: ${nomePacote}
 
 ✨ TUDO INCLUSO NO VALOR:
@@ -309,8 +317,7 @@ Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidado
 
 ${balcao === 'Sim' ? '• Balcão incluso\n' : ''}
 ${coposVidro === 'Sim' ? '• Copos de vidro inclusos\n' : ''}
-${deslocamento === 'Sim' ? '• Deslocamento (>30km) incluso\n' : ''}
-
+${deslocamentoTexto}
 Você planeja o evento!  
 Nós cuidamos do momento em que todos vão lembrar. 😊`;
     }
