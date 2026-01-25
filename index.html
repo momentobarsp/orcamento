@@ -321,8 +321,8 @@
       doc.setFont("helvetica", "bold");
       doc.text("PROPOSTA", 15, 82);
       doc.setFont("helvetica", "normal");
-      doc.text(`Open Bar de 5 Horas.`, 15, 89);
-      doc.text(`Para aproximadamente ${convidados} pessoas e inclui o seguinte:`, 15, 95);
+      doc.text(`Open Bar de 5 Horas para aproximadamente ${convidados} pessoas.`, 15, 89);
+      doc.text("Incluso no valor:", 15, 95);
 
       let y = 102;
       const addItem = (item) => {
@@ -331,35 +331,23 @@
       };
 
       if (taxaDeslocamento > 0) addItem("Deslocamento");
-      addItem("Fruteiras de Vidro");
-      addItem("Cardápio personalizado");
-      addItem("Utensílios: Coqueteleiras, dosadores, maceradores, tapetes de bar, facas, entre outros.");
-      addItem("Insumo: Frutas, gelo, xaropes, bebidas.");
-      addItem("Copos: Descartáveis.");
-      doc.text("A equipe é composta por funcionários uniformizados e conta com mão de obra", 15, y); y += 6;
-      doc.text("especializada, incluindo 1 Bartender e 1 auxiliar de bar.", 15, y); y += 10;
-
-      // Cardápio
-      doc.setFont("helvetica", "bold");
-      doc.text("CARDÁPIO", 15, y); y += 6;
-      doc.setFont("helvetica", "normal");
-      addItem("Caipirinha (Cachaça Velho Barreiro, xarope de açúcar e frutas)");
-      addItem("Kiwi");
-      addItem("Morango");
-      addItem("Gin & Tônica (Gin Seagers, água tônica, limão, especiarias)");
-      addItem("Limão Taiti");
-      addItem("Caldo de cana");
-      addItem("Sex On The Beach (Vodka Smirnoff, licor Stock de pêssego, suco natural de laranja, xarope Dilute Granadine)");
-      addItem("Pink Limonade (Sprite, xarope Dilute Pink Limonade)"); y += 6;
+      addItem("Fruteiras de vidro");
+      addItem("Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.");
+      addItem("Insumos: frutas, gelo, xaropes e bebidas");
+      addItem("Copos descartáveis");
+      if (balcao) addItem("Balcão incluso");
+      if (coposVidro) addItem("Copos de vidro inclusos");
+      doc.text("Equipe: 1 Bartender e 1 auxiliar de bar, uniformizados e especializados.", 15, y); y += 12;
 
       // Pagamento
       doc.setFont("helvetica", "bold");
       doc.text("FORMAS DE PAGAMENTO", 15, y); y += 6;
       doc.setFont("helvetica", "normal");
       doc.text(`VALOR: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 15, y); y += 8;
-      doc.text("30% do valor para reservar a data, pagamento à vista ou parcelado", 15, y); y += 6;
-      doc.text("em 10x no cartão de crédito! Com saldo até 5 dias antes do evento.", 15, y); y += 6;
-      doc.text("(Juros da máquina ou link fica por conta do contratante).", 15, y); y += 12;
+      doc.text("30% do valor para reservar a data.", 15, y); y += 6;
+      doc.text("Pagamento à vista ou parcelado em até 10x no cartão de crédito.", 15, y); y += 6;
+      doc.text("Saldo deve ser quitado até 5 dias antes do evento.", 15, y); y += 6;
+      doc.text("(Juros da máquina ou link ficam por conta do contratante).", 15, y); y += 12;
 
       // Assinatura
       doc.setFont("helvetica", "bold");
