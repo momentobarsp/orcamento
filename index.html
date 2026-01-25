@@ -251,7 +251,6 @@
       if (balcao) extras += 250;
       if (coposVidro) extras += 350;
       
-      // ✅ Cobre R$ 200 SOMENTE se distância > 20 km
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = valorBase + extras + taxaDeslocamento;
       
@@ -281,8 +280,8 @@
       const convidados = document.getElementById('convidados').value;
       const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
       
-      const balcao = document.getElementById('balcao').checked ? 'Sim' : 'Não';
-      const coposVidro = document.getElementById('coposVidro').checked ? 'Sim' : 'Não';
+      const balcao = document.getElementById('balcao').checked;
+      const coposVidro = document.getElementById('coposVidro').checked;
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
       const total = document.getElementById('total').textContent;
 
@@ -297,7 +296,11 @@
       const deslocamentoTexto = distancia > 20 
         ? `• Deslocamento (${distancia} km) – taxa de R$ 200 aplicada\n` 
         : `• Deslocamento (${distancia} km) – sem taxa (até 20 km)\n`;
-      
+
+      let extrasTexto = '';
+      if (balcao) extrasTexto += '• Balcão incluso\n';
+      if (coposVidro) extrasTexto += '• Copos de vidro inclusos\n';
+
       return `Olá, ${nome}! 🍸
 
 Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidados.
@@ -315,9 +318,7 @@ Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidado
 • Fruteiras, balde de gelo e todos os utensílios
 • Limpeza completa após o evento
 
-${balcao === 'Sim' ? '• Balcão incluso\n' : ''}
-${coposVidro === 'Sim' ? '• Copos de vidro inclusos\n' : ''}
-${deslocamentoTexto}
+${extrasTexto}${deslocamentoTexto}
 Você planeja o evento!  
 Nós cuidamos do momento em que todos vão lembrar. 😊`;
     }
