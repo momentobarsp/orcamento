@@ -149,7 +149,7 @@
 <body>
   <div class="container">
     <div class="logo">MOMENTO BAR</div>
-    <h1>Orçamento Rápido – Open Bar 5h</h1>
+    <h1>Orçamento Rápido</h1>
 
     <!-- Formulário -->
     <div class="input-group">
@@ -245,12 +245,11 @@
       }
       
       let valorBase = convidados * precoPorPessoa;
-      if (valorBase < 1800) valorBase = 1800;
+      if (valorBase < 2700) valorBase = 2700;
       
       let extras = 0;
       if (balcao) extras += 250;
       if (coposVidro) extras += 350;
-      if (deslocamento) extras += 200;
       
       const total = valorBase + extras;
       
@@ -294,7 +293,7 @@
       const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : 'Data não informada';
       return `Olá, ${nome}! 🍸
 
-Seu orçamento da **Momento Bar** ficou em **${total}** para ${convidados} convidados.
+Seu orçamento da *Momento Bar* ficou em *${total}* para ${convidados} convidados.
 
 📅 Data do evento: ${dataFormatada}
 📍 Local: ${localEvento}
