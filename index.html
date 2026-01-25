@@ -204,7 +204,6 @@
     </div>
   </div>
 
-  <!-- ✅ Corrigido: removido espaço no final da URL -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     let valorTotalNumerico = 0;
@@ -292,11 +291,14 @@
         ? `• Drinks inclusos: ${drinks.join(', ')}\n` 
         : '';
 
-      let msg = `Olá, ${nome}!\n\n`;
+      // ✅ Substitui & por "e" para evitar quebra na URL
+      const nomePacoteSeguro = nomePacote.replace(/&/g, "e");
+
+      let msg = `Olá, ${nome}! 🍸\n\n`;
       msg += `Seu orçamento da Momento Bartenders ficou em R$ ${valorTotalNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} para ${convidados} convidados.\n\n`;
       msg += `📅 Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
       msg += `📍 Local: ${localEvento}\n`;
-      msg += `📦 Pacote: ${nomePacote}\n\n`;
+      msg += `📦 Pacote: ${nomePacoteSeguro}\n\n`;
 
       msg += `✨ TUDO INCLUSO NO VALOR:\n`;
       msg += drinksTexto;
@@ -321,10 +323,11 @@
       equipeTexto += ', uniformizados.';
       msg += `\n${equipeTexto}\n\n`;
 
-      msg += `Você planeja o evento!\nNós cuidamos do momento que todos vão lembrar.`;
+      msg += `Você planeja o evento!\nNós cuidamos do momento que todos vão lembrar. 😊`;
 
-      // ✅ Corrigido: removido espaço após "?text="
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+      // ✅ URL limpa, sem espaços, com codificação segura
+      const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
     }
 
     function gerarPDF() {
@@ -361,7 +364,6 @@
       doc.setTextColor(0, 0, 0);
       doc.text(`ORÇAMENTO BAR DE DRINKS`, 15, 40);
 
-      // Objetivo
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.text("OBJETIVO", 15, 55);
@@ -369,7 +371,6 @@
       doc.text("Open bar de drinks, no qual a nossa empresa se responsabilizará por todo preparo e", 15, 62);
       doc.text("mão de obra pelo bar de drinks no evento.", 15, 68);
 
-      // Proposta
       doc.setFont("helvetica", "bold");
       doc.text("PROPOSTA", 15, 82);
       doc.setFont("helvetica", "normal");
@@ -378,9 +379,10 @@
 
       let y = 101;
 
-      // Drinks (se houver)
       if (drinks.length > 0) {
-        doc.text(`Drinks inclusos: ${drinks.join(', ')}`, 15, y);
+        // Substitui & por "e" no PDF também para compatibilidade
+        const drinksPDF = drinks.map(d => d.replace(/&/g, "e")).join(', ');
+        doc.text(`Drinks inclusos: ${drinksPDF}`, 15, y);
         y += 8;
       }
 
@@ -405,7 +407,6 @@
       
       if (balcao) addItem("Balcão incluso");
 
-      // Equipe
       let equipeTexto = `Equipe: ${bartenders} Bartenders e ${auxiliares} auxiliares de bar`;
       if (copeiros > 0) {
         equipeTexto += `, além de ${copeiros} copeiro${copeiros > 1 ? 's' : ''}`;
@@ -413,7 +414,6 @@
       equipeTexto += ", uniformizados.";
       doc.text(equipeTexto, 15, y); y += 12;
 
-      // Pagamento
       doc.setFont("helvetica", "bold");
       doc.text("FORMAS DE PAGAMENTO", 15, y); y += 7;
       doc.setFont("helvetica", "normal");
@@ -423,7 +423,6 @@
       doc.text("Saldo deve ser quitado até 5 dias antes do evento.", 15, y); y += 7;
       doc.text("(Juros da máquina ou link ficam por conta do contratante).", 15, y); y += 12;
 
-      // Assinatura
       doc.setFont("helvetica", "bold");
       doc.text("TIAGO MOURA", 15, y);
       doc.text("(15) 98131-9356", 15, y + 8);
@@ -431,7 +430,6 @@
       doc.text("“Você planeja o evento!", 15, y + 20);
       doc.text("Nós cuidamos do momento que todos vão lembrar.”", 15, y + 26);
 
-      // Rodapé
       doc.setFontSize(9);
       doc.setTextColor(120, 120, 120);
       doc.text(`Documento gerado em: ${dataHoje} • Válido por 7 dias`, 105, 285, null, null, "center");
