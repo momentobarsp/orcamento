@@ -13,7 +13,7 @@
       font-family: 'Montserrat', sans-serif;
     }
     body {
-      background: #121212;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1612 100%);
       color: #f5f5f5;
       min-height: 100vh;
       display: flex;
@@ -42,7 +42,8 @@
     input[type="text"],
     input[type="number"],
     input[type="date"],
-    select {
+    select,
+    textarea {
       width: 100%;
       padding: 13px;
       border: 2px solid #444;
@@ -52,7 +53,7 @@
       color: white;
       transition: all 0.3s;
     }
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: #d4af37;
       outline: none;
       background: #333;
@@ -80,6 +81,12 @@
       cursor: pointer;
       transition: all 0.3s;
       margin-bottom: 12px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(212, 175, 55, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
     }
     button:hover {
       background: #b8952e;
@@ -90,6 +97,8 @@
       margin-top: 28px;
       padding: 24px;
       background: #252525;
+      border: 1px solid #d4af37;
+      border-left: 4px solid #d4af37;
       border-radius: 14px;
       text-align: center;
       opacity: 0;
@@ -115,6 +124,7 @@
       font-size: 14px;
       padding: 11px;
       margin-bottom: 0;
+      animation: none;
     }
     .whatsapp-btn {
       background: #25D366;
@@ -132,49 +142,76 @@
       background: #3e2723;
       transform: translateY(-2px);
     }
+
+    /* Painel Admin */
+    #adminPanel {
+      background: #2a2a2a;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+    #adminPanel h3 {
+      color: #ff5722;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    .admin-section {
+      margin-bottom: 20px;
+    }
+    .admin-section h4 {
+      margin-bottom: 10px;
+      color: #d4af37;
+    }
+    .pacote-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #333;
+      border-radius: 8px;
+    }
+    .drink-input {
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Logo redonda -->
-    <div style="text-align: center; margin-bottom: 20px;">
-      <img src="logo.png" alt="Momento Bartenders" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #d4af37; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+    <!-- Logo redonda com brilho -->
+    <div id="logo" style="text-align: center; margin-bottom: 20px; cursor: pointer;">
+      <img src="logo.png" alt="Momento Bartenders" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; 
+           border: 3px solid #d4af37; 
+           box-shadow: 0 0 12px rgba(212, 175, 55, 0.3), inset 0 0 8px rgba(255, 255, 255, 0.1);">
     </div>
 
     <div class="input-group">
-      <label for="nome">Nome do cliente</label>
+      <label for="nome">👤 Nome do cliente</label>
       <input type="text" id="nome" placeholder="Ex: Tiago Moura">
     </div>
     
     <div class="input-group">
-      <label for="localEvento">Local do evento</label>
+      <label for="localEvento">📍 Local do evento</label>
       <input type="text" id="localEvento" placeholder="Ex: Tatuí, SP">
     </div>
     
     <div class="input-group">
-      <label for="dataEvento">Data do evento</label>
+      <label for="dataEvento">📅 Data do evento</label>
       <input type="date" id="dataEvento">
     </div>
     
     <div class="input-group">
-      <label for="distancia">Distância do evento (km)</label>
+      <label for="distancia">🚗 Distância do evento (km)</label>
       <input type="number" id="distancia" min="0" value="0" placeholder="Ex: 25">
     </div>
     
     <div class="input-group">
-      <label for="pacote">Pacote</label>
+      <label for="pacote">🍸 Pacote</label>
       <select id="pacote">
-        <option value="36.20">Tropical Classic</option>
-        <option value="39.00">Mistura Contemporânea</option>
-        <option value="39.80">Summer Fresh</option>
-        <option value="48.00">Sunset Experience</option>
-        <option value="55.00">Ousados & Refrescantes</option>
-        <option value="57.00">Clássicos Sofisticados</option>
+        <!-- Será preenchido dinamicamente -->
       </select>
     </div>
     
     <div class="input-group">
-      <label for="convidados">Número de convidados</label>
+      <label for="convidados">👥 Número de convidados</label>
       <input type="number" id="convidados" min="1" value="50">
     </div>
     
@@ -202,21 +239,143 @@
 
       <button class="pdf-btn" onclick="gerarPDF()">Gerar PDF</button>
     </div>
+
+    <!-- Painel Admin -->
+    <div id="adminPanel">
+      <h3>⚙️ Modo Admin</h3>
+      
+      <div class="admin-section">
+        <h4>Pacotes e Preços</h4>
+        <div id="pacotesAdmin"></div>
+        <button onclick="addPacote()">+ Adicionar Pacote</button>
+      </div>
+
+      <div class="admin-section">
+        <h4>Textos de Serviço</h4>
+        <div class="input-group">
+          <label>Itens padrão (um por linha)</label>
+          <textarea id="itensPadrao" rows="4"></textarea>
+        </div>
+      </div>
+
+      <button onclick="salvarConfiguracoes()">Salvar Configurações</button>
+      <button onclick="resetarConfiguracoes()" style="background:#666;">Resetar para Padrão</button>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    let valorTotalNumerico = 0;
-
-    const DRINKS_POR_PACOTE = {
-      "36.20": ["Caipirinha", "Caipirosca", "Saquerita", "Mocktail de Frutas"],
-      "39.00": ["Caipirinha", "Caipirosca", "Moscow Mule", "Soda italiana"],
-      "39.80": ["Mojito", "Caipirosca", "Gin&Tônica", "Pink Limonade"],
-      "48.00": ["Sex On The Beach", "Whisky Sour", "Aperol Spritz", "Mocktail de Frutas"],
-      "55.00": ["Caiperol", "Caipirosca", "Aperol Spritz", "Pink Limonade"],
-      "57.00": ["Negroni", "Aperol Spritz", "Gin&Tônica", "Piña Colada"]
+    // Configuração inicial (padrão)
+    const CONFIG_PADRAO = {
+      pacotes: [
+        { nome: "Tropical Classic", preco: 36.20, drinks: ["Caipirinha", "Caipirosca", "Saquerita", "Mocktail de Frutas"] },
+        { nome: "Mistura Contemporânea", preco: 39.00, drinks: ["Caipirinha", "Caipirosca", "Moscow Mule", "Soda italiana"] },
+        { nome: "Summer Fresh", preco: 39.80, drinks: ["Mojito", "Caipirosca", "Gin&Tônica", "Pink Limonade"] },
+        { nome: "Sunset Experience", preco: 48.00, drinks: ["Sex On The Beach", "Whisky Sour", "Aperol Spritz", "Mocktail de Frutas"] },
+        { nome: "Ousados & Refrescantes", preco: 55.00, drinks: ["Caiperol", "Caipirosca", "Aperol Spritz", "Pink Limonade"] },
+        { nome: "Clássicos Sofisticados", preco: 57.00, drinks: ["Negroni", "Aperol Spritz", "Gin&Tônica", "Piña Colada"] }
+      ],
+      itensPadrao: [
+        "Fruteiras de vidro",
+        "Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.",
+        "Insumos: frutas, gelo, xaropes e bebidas"
+      ]
     };
 
+    let config = JSON.parse(localStorage.getItem('momentoBartendersConfig')) || CONFIG_PADRAO;
+    let valorTotalNumerico = 0;
+
+    function atualizarSelectPacotes() {
+      const select = document.getElementById('pacote');
+      select.innerHTML = '';
+      config.pacotes.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.preco;
+        opt.textContent = p.nome;
+        select.appendChild(opt);
+      });
+    }
+
+    function carregarConfiguracao() {
+      atualizarSelectPacotes();
+      document.getElementById('itensPadrao').value = config.itensPadrao.join('\n');
+      renderizarPacotesAdmin();
+    }
+
+    function renderizarPacotesAdmin() {
+      const container = document.getElementById('pacotesAdmin');
+      container.innerHTML = '';
+      config.pacotes.forEach((p, index) => {
+        const div = document.createElement('div');
+        div.className = 'pacote-item';
+        div.innerHTML = `
+          <div class="input-group">
+            <input type="text" value="${p.nome}" oninput="config.pacotes[${index}].nome=this.value" placeholder="Nome do pacote">
+          </div>
+          <div class="input-group">
+            <input type="number" step="0.01" value="${p.preco}" oninput="config.pacotes[${index}].preco=parseFloat(this.value)" placeholder="Preço">
+          </div>
+          <div class="input-group">
+            <label>Drinks (um por linha)</label>
+            <textarea class="drink-input" rows="3" oninput="config.pacotes[${index}].drinks=this.value.split('\\n').filter(d => d.trim())">${p.drinks.join('\n')}</textarea>
+          </div>
+          <button type="button" onclick="removerPacote(${index})" style="background:#600; padding:5px; font-size:12px;">Remover</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addPacote() {
+      config.pacotes.push({ nome: "Novo Pacote", preco: 0, drinks: [] });
+      renderizarPacotesAdmin();
+    }
+
+    function removerPacote(index) {
+      if (config.pacotes.length > 1) {
+        config.pacotes.splice(index, 1);
+        renderizarPacotesAdmin();
+        atualizarSelectPacotes();
+      }
+    }
+
+    function salvarConfiguracoes() {
+      config.itensPadrao = document.getElementById('itensPadrao').value.split('\n').filter(i => i.trim());
+      localStorage.setItem('momentoBartendersConfig', JSON.stringify(config));
+      atualizarSelectPacotes();
+      alert('Configurações salvas!');
+    }
+
+    function resetarConfiguracoes() {
+      if (confirm('Tem certeza? Isso apagará todas as suas alterações.')) {
+        config = JSON.parse(JSON.stringify(CONFIG_PADRAO));
+        localStorage.setItem('momentoBartendersConfig', JSON.stringify(config));
+        carregarConfiguracao();
+        alert('Configurações restauradas ao padrão.');
+      }
+    }
+
+    function getDrinksByPreco(preco) {
+      const pacote = config.pacotes.find(p => p.preco == preco);
+      return pacote ? pacote.drinks : [];
+    }
+
+    function getNomePacoteByPreco(preco) {
+      const pacote = config.pacotes.find(p => p.preco == preco);
+      return pacote ? pacote.nome : 'Desconhecido';
+    }
+
+    let cliquesLogo = 0;
+    document.getElementById('logo').addEventListener('click', () => {
+      cliquesLogo++;
+      if (cliquesLogo >= 3) {
+        document.getElementById('adminPanel').style.display = 'block';
+        cliquesLogo = 0;
+      }
+    });
+
+    carregarConfiguracao();
+
+    // === LÓGICA PRINCIPAL (INALTERADA) ===
     const { jsPDF } = window.jspdf;
 
     function formatarDataBR(dataISO) {
@@ -233,7 +392,7 @@
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
       
       const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
-      const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
+      const nomePacote = getNomePacoteByPreco(precoPorPessoa);
       
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
@@ -275,8 +434,8 @@
       const dataEvento = document.getElementById('dataEvento').value;
       const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
-      const valorPacote = document.getElementById('pacote').value;
-      const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
+      const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
+      const nomePacote = getNomePacoteByPreco(precoPorPessoa);
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
@@ -286,12 +445,11 @@
       const auxiliares = duplas;
       const copeiros = coposVidro ? duplas : 0;
 
-      const drinks = DRINKS_POR_PACOTE[valorPacote] || [];
+      const drinks = getDrinksByPreco(precoPorPessoa);
       const drinksTexto = drinks.length > 0 
         ? `• Drinks inclusos: ${drinks.join(', ')}\n` 
         : '';
 
-      // ✅ Substitui & por "e" para evitar quebra na URL
       const nomePacoteSeguro = nomePacote.replace(/&/g, "e");
 
       let msg = `Olá, ${nome}! 🍸\n\n`;
@@ -302,9 +460,9 @@
 
       msg += `✨ TUDO INCLUSO NO VALOR:\n`;
       msg += drinksTexto;
-      msg += `• Fruteiras de vidro\n`;
-      msg += `• Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.\n`;
-      msg += `• Insumos: frutas, gelo, xaropes e bebidas\n`;
+      config.itensPadrao.forEach(item => {
+        msg += `• ${item}\n`;
+      });
 
       if (coposVidro) {
         msg += `• Copos de vidro inclusos\n`;
@@ -325,7 +483,6 @@
 
       msg += `Você planeja o evento!\nNós cuidamos do momento que todos vão lembrar. 😊`;
 
-      // ✅ URL limpa, sem espaços, com codificação segura
       const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
       window.open(url, '_blank');
     }
@@ -336,8 +493,8 @@
       const dataEvento = document.getElementById('dataEvento').value;
       const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
-      const valorPacote = document.getElementById('pacote').value;
-      const nomePacote = document.getElementById('pacote').options[document.getElementById('pacote').selectedIndex].text;
+      const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
+      const nomePacote = getNomePacoteByPreco(precoPorPessoa);
       const balcao = document.getElementById('balcao').checked;
       const coposVidro = document.getElementById('coposVidro').checked;
       const taxaDeslocamento = distancia > 20 ? 200 : 0;
@@ -347,7 +504,7 @@
       const auxiliares = duplas;
       const copeiros = coposVidro ? duplas : 0;
 
-      const drinks = DRINKS_POR_PACOTE[valorPacote] || [];
+      const drinks = getDrinksByPreco(precoPorPessoa);
 
       const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : '';
       const dataHoje = new Date().toLocaleDateString('pt-BR');
@@ -380,7 +537,6 @@
       let y = 101;
 
       if (drinks.length > 0) {
-        // Substitui & por "e" no PDF também para compatibilidade
         const drinksPDF = drinks.map(d => d.replace(/&/g, "e")).join(', ');
         doc.text(`Drinks inclusos: ${drinksPDF}`, 15, y);
         y += 8;
@@ -394,9 +550,7 @@
       };
 
       if (taxaDeslocamento > 0) addItem("Deslocamento");
-      addItem("Fruteiras de vidro");
-      addItem("Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.");
-      addItem("Insumos: frutas, gelo, xaropes e bebidas");
+      config.itensPadrao.forEach(item => addItem(item));
       
       if (coposVidro) {
         addItem("Copos de vidro inclusos");
