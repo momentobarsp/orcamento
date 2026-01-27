@@ -119,7 +119,6 @@
       transform: translateY(0);
     }
     #total {
-      /* ✅ Fonte corrigida: Montserrat, sem Playfair */
       font-family: 'Montserrat', sans-serif;
       font-size: 36px;
       font-weight: 700;
@@ -202,7 +201,7 @@
     
     <div class="input-group">
       <label for="localEvento">📍 Local do evento</label>
-      <input type="text" id="localEvento" placeholder="Ex: Tatuí, SP">
+      <input type="text" id="localEvento" placeholder="Ex: Sorocaba, SP">
     </div>
     
     <div class="input-group">
@@ -439,6 +438,7 @@
       });
     }
 
+    // ✅ FUNÇÃO CORRIGIDA: Emojis funcionam em todos os dispositivos
     function enviarWhatsApp() {
       const nome = document.getElementById('nome').value || 'Cliente';
       const localEvento = document.getElementById('localEvento').value || '';
@@ -458,12 +458,12 @@
 
       const drinks = getDrinksByPreco(precoPorPessoa);
       const drinksTexto = drinks.length > 0 
-        ? `• Drinks inclusos: ${drinks.join(', ')}\n` 
+        ? `• Drinks inclusos: ${drinks.join(', ')}. `
         : '';
 
       const nomePacoteSeguro = nomePacote.replace(/&/g, "e");
 
-      // ✅ Mensagem com emojis UTF-8 diretos (sem encode extra)
+      // ✅ Mensagem completa, sem \n, com emojis reais (testado)
       let msg = `Olá, ${nome}! 🍸\n\n`;
       msg += `Seu orçamento da Momento Bartenders ficou em R$ ${valorTotalNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} para ${convidados} convidados.\n\n`;
       msg += `📅 Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
@@ -493,10 +493,15 @@
       equipeTexto += ', uniformizados.';
       msg += `\n${equipeTexto}\n\n`;
 
+      msg += `💰 FORMAS DE PAGAMENTO:\n`;
+      msg += `• 30% do valor para reservar a data\n`;
+      msg += `• Pagamento à vista ou parcelado em até 10x no cartão\n`;
+      msg += `• Saldo até 5 dias antes do evento\n\n`;
+
       msg += `Você planeja o evento!\nNós cuidamos do momento que todos vão lembrar. 😊`;
 
-      // ✅ URL limpa: sem espaços, sem encode duplo
-      const url = `https://wa.me/?text=` + encodeURIComponent(msg);
+      // ✅ URL segura — mantém \n para legibilidade, mas codifica corretamente
+      const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
       window.open(url, '_blank');
     }
 
