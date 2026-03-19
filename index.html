@@ -145,7 +145,7 @@
       background: #3e2723;
     }
 
-    /* Prévia interna */
+    /* Prévia detalhada */
     .preview {
       background: #2a2a2a;
       border-left: 3px solid #d4af37;
@@ -169,12 +169,12 @@
 
     <div class="input-group">
       <label for="nome">👤 Nome do cliente</label>
-      <input type="text" id="nome" placeholder="Ex: Ellen Lima">
+      <input type="text" id="nome" placeholder="Ex: Tiago Moura">
     </div>
     
     <div class="input-group">
       <label for="localEvento">📍 Local do evento</label>
-      <input type="text" id="localEvento" placeholder="Ex: Capela do Alto, SP">
+      <input type="text" id="localEvento" placeholder="Ex: Tatuí, SP">
     </div>
     
     <div class="input-group">
@@ -264,24 +264,26 @@
       <h4>🔍 Prévia Detalhada</h4>
       <p><strong>Custo Total (sem lucro):</strong> R$ <span id="custoTotal">0,00</span></p>
       <p><strong>Margem de Lucro:</strong> <span id="margemMostrada">0</span>%</p>
+      <p><strong>Lucro (R$):</strong> R$ <span id="lucroReal">0,00</span></p>
       <p><strong>Valor Final (com lucro):</strong> R$ <span id="valorFinalMostrado">0,00</span></p>
     </div>
   </div>
 
   <script>
     // Mostrar campos extras
-    document.getElementById('balcao').addEventListener('change', () => {
+    document.getElementById('balcao').addEventListener('change', function() {
       document.getElementById('grupoBalcao').style.display = this.checked ? 'block' : 'none';
     });
-    document.getElementById('coposVidro').addEventListener('change', () => {
+    document.getElementById('coposVidro').addEventListener('change', function() {
       document.getElementById('grupoCopos').style.display = this.checked ? 'block' : 'none';
     });
-    document.getElementById('distancia').addEventListener('input', () => {
+    document.getElementById('distancia').addEventListener('input', function() {
       const km = parseInt(this.value) || 0;
       document.getElementById('grupoDeslocamento').style.display = km > 0 ? 'block' : 'none';
     });
 
     let custoTotal = 0;
+    let lucroReal = 0;
     let valorFinal = 0;
     let margem = 0;
 
@@ -323,8 +325,11 @@
         valorCopos +
         valorDeslocamento;
 
-      // Aplica margem de lucro
-      valorFinal = custoTotal * (1 + margem / 100);
+      // Lucro em R$
+      lucroReal = custoTotal * (margem / 100);
+
+      // Valor final com lucro
+      valorFinal = custoTotal + lucroReal;
 
       // Atualiza interface
       document.getElementById('cliente').textContent = nome + (localEvento ? ` - ${localEvento}` : '');
@@ -332,6 +337,7 @@
       
       document.getElementById('custoTotal').textContent = custoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
       document.getElementById('margemMostrada').textContent = margem;
+      document.getElementById('lucroReal').textContent = lucroReal.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
       document.getElementById('valorFinalMostrado').textContent = valorFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
       
       document.getElementById('preview').style.display = 'block';
@@ -421,6 +427,7 @@
 
       msg += `📊 CUSTO TOTAL: R$ ${custoTotal.toFixed(2)}\n`;
       msg += `📈 MARGEM DE LUCRO: ${margem}%\n`;
+      msg += `💎 LUCRO (R$): R$ ${lucroReal.toFixed(2)}\n`;
       msg += `✅ VALOR FINAL AO CLIENTE: R$ ${valorFinal.toFixed(2)}\n\n`;
       msg += `📌 Enviado via ferramenta interna.`;
 
