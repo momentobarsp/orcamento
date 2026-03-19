@@ -44,9 +44,7 @@
     }
     input[type="text"],
     input[type="number"],
-    input[type="date"],
-    select,
-    textarea {
+    input[type="date"] {
       width: 100%;
       padding: 13px;
       border: 2px solid #444;
@@ -56,7 +54,7 @@
       color: white;
       transition: all 0.3s ease;
     }
-    input:focus, select:focus, textarea:focus {
+    input:focus {
       border-color: #d4af37;
       outline: none;
       background: #2a2a2a;
@@ -96,10 +94,6 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(212, 175, 55, 0.3);
     }
-    button:active {
-      transform: translateY(1px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
     #result {
       margin-top: 28px;
       padding: 24px;
@@ -136,72 +130,51 @@
       margin-bottom: 0;
       animation: none;
     }
-    .whatsapp-btn {
+    .whatsapp-cliente {
       background: #25D366;
       color: white;
     }
-    .whatsapp-btn:hover {
+    .whatsapp-cliente:hover {
       background: #128C7E;
-      transform: translateY(-2px);
     }
-    .pdf-btn {
+    .whatsapp-interno {
       background: #5d4037;
       color: white;
     }
-    .pdf-btn:hover {
+    .whatsapp-interno:hover {
       background: #3e2723;
-      transform: translateY(-2px);
     }
 
-    /* Painel Admin */
-    #adminPanel {
+    /* Prévia interna */
+    .preview {
       background: #2a2a2a;
-      border-radius: 12px;
-      padding: 20px;
+      border-left: 3px solid #d4af37;
+      padding: 16px;
       margin-top: 20px;
-      display: none;
-      border: 1px solid #d4af37;
+      border-radius: 10px;
+      font-size: 14px;
     }
-    #adminPanel h3 {
-      color: #ff5722;
-      margin-bottom: 15px;
-      font-size: 18px;
-    }
-    .admin-section {
-      margin-bottom: 20px;
-    }
-    .admin-section h4 {
-      margin-bottom: 10px;
+    .preview h4 {
       color: #d4af37;
-    }
-    .pacote-item {
       margin-bottom: 10px;
-      padding: 10px;
-      background: #333;
-      border-radius: 8px;
     }
-    .drink-input {
-      margin-top: 5px;
+    .preview p {
+      margin: 6px 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Logo redonda com brilho -->
-    <div id="logo" style="text-align: center; margin-bottom: 20px; cursor: pointer;">
-      <img src="logo.png" alt="Momento Bartenders" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; 
-           border: 3px solid #d4af37; 
-           box-shadow: 0 0 16px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);">
-    </div>
+    <!-- SEM LOGO -->
 
     <div class="input-group">
       <label for="nome">👤 Nome do cliente</label>
-      <input type="text" id="nome" placeholder="Ex: Tiago Moura">
+      <input type="text" id="nome" placeholder="Ex: Ellen Lima">
     </div>
     
     <div class="input-group">
       <label for="localEvento">📍 Local do evento</label>
-      <input type="text" id="localEvento" placeholder="Ex: Sorocaba, SP">
+      <input type="text" id="localEvento" placeholder="Ex: Capela do Alto, SP">
     </div>
     
     <div class="input-group">
@@ -210,32 +183,67 @@
     </div>
     
     <div class="input-group">
-      <label for="distancia">🚗 Distância do evento (km)</label>
-      <input type="number" id="distancia" min="0" value="0" placeholder="Ex: 25">
-    </div>
-    
-    <div class="input-group">
-      <label for="pacote">🍸 Pacote</label>
-      <select id="pacote">
-        <!-- Será preenchido dinamicamente -->
-      </select>
-    </div>
-    
-    <div class="input-group">
       <label for="convidados">👥 Número de convidados</label>
       <input type="number" id="convidados" min="1" value="50">
     </div>
     
+    <div class="input-group">
+      <label for="bartenders">👷 Quantidade de Bartenders</label>
+      <input type="number" id="bartenders" min="0" value="1">
+    </div>
+    
+    <div class="input-group">
+      <label for="valorBartender">💰 Valor por Bartender (R$)</label>
+      <input type="number" id="valorBartender" step="0.01" min="0" value="350.00">
+    </div>
+    
+    <div class="input-group">
+      <label for="auxiliares">👷 Quantidade de Auxiliares</label>
+      <input type="number" id="auxiliares" min="0" value="1">
+    </div>
+    
+    <div class="input-group">
+      <label for="valorAuxiliar">💰 Valor por Auxiliar (R$)</label>
+      <input type="number" id="valorAuxiliar" step="0.01" min="0" value="200.00">
+    </div>
+    
+    <div class="input-group">
+      <label for="prolabore">💼 Pró-labore / Custo Adicional (R$)</label>
+      <input type="number" id="prolabore" step="0.01" min="0" value="0.00">
+    </div>
+    
+    <div class="input-group">
+      <label for="margemLucro">📈 Margem de Lucro (%)</label>
+      <input type="number" id="margemLucro" step="1" min="0" value="30">
+    </div>
+    
     <div class="checkbox-group">
       <input type="checkbox" id="balcao">
-      <label for="balcao">Balcão incluso (+R$ 250)</label>
+      <label for="balcao">Balcão incluso</label>
+    </div>
+    <div class="input-group" id="grupoBalcao" style="display:none; margin-top:-16px;">
+      <label for="valorBalcao">Valor do Balcão (R$)</label>
+      <input type="number" id="valorBalcao" step="0.01" min="0" value="250.00">
     </div>
     
     <div class="checkbox-group">
       <input type="checkbox" id="coposVidro">
-      <label for="coposVidro">Copos de vidro (+R$ 350)</label>
+      <label for="coposVidro">Copos de vidro</label>
+    </div>
+    <div class="input-group" id="grupoCopos" style="display:none; margin-top:-16px;">
+      <label for="valorCopos">Valor dos Copos de Vidro (R$)</label>
+      <input type="number" id="valorCopos" step="0.01" min="0" value="350.00">
     </div>
     
+    <div class="input-group">
+      <label for="distancia">🚗 Distância (km)</label>
+      <input type="number" id="distancia" min="0" value="0" placeholder="Ex: 25">
+    </div>
+    <div class="input-group" id="grupoDeslocamento" style="display:none; margin-top:-16px;">
+      <label for="valorDeslocamento">Valor do Deslocamento (R$)</label>
+      <input type="number" id="valorDeslocamento" step="0.01" min="0" value="200.00">
+    </div>
+
     <button onclick="calcular()">CALCULAR ORÇAMENTO</button>
 
     <div id="result" class="result">
@@ -244,149 +252,38 @@
       <div id="total">R$ 0,00</div>
 
       <div class="btn-group">
-        <button onclick="copiarValor()">Copiar valor</button>
-        <button class="whatsapp-btn" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
+        <button class="whatsapp-cliente" onclick="enviarWhatsAppCliente()">Enviar ao Cliente</button>
+        <button class="whatsapp-interno" onclick="enviarWhatsAppInterno()">Controle Interno</button>
       </div>
 
-      <button class="pdf-btn" onclick="gerarPDF()">Gerar PDF</button>
+      <button onclick="copiarValor()">Copiar valor final</button>
     </div>
 
-    <!-- Painel Admin -->
-    <div id="adminPanel">
-      <h3>⚙️ Modo Admin</h3>
-      
-      <div class="admin-section">
-        <h4>Pacotes e Preços</h4>
-        <div id="pacotesAdmin"></div>
-        <button onclick="addPacote()">+ Adicionar Pacote</button>
-      </div>
-
-      <div class="admin-section">
-        <h4>Textos de Serviço</h4>
-        <div class="input-group">
-          <label>Itens padrão (um por linha)</label>
-          <textarea id="itensPadrao" rows="4"></textarea>
-        </div>
-      </div>
-
-      <button onclick="salvarConfiguracoes()">Salvar Configurações</button>
-      <button onclick="resetarConfiguracoes()" style="background:#666;">Resetar para Padrão</button>
+    <!-- Prévia detalhada -->
+    <div id="preview" class="preview" style="display:none;">
+      <h4>🔍 Prévia Detalhada</h4>
+      <p><strong>Custo Total (sem lucro):</strong> R$ <span id="custoTotal">0,00</span></p>
+      <p><strong>Margem de Lucro:</strong> <span id="margemMostrada">0</span>%</p>
+      <p><strong>Valor Final (com lucro):</strong> R$ <span id="valorFinalMostrado">0,00</span></p>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    const CONFIG_PADRAO = {
-      pacotes: [
-        { nome: "Tropical Classic", preco: 36.20, drinks: ["Caipirinha", "Caipirosca", "Saquerita", "Mocktail de Frutas"] },
-        { nome: "Mistura Contemporânea", preco: 39.00, drinks: ["Caipirinha", "Caipirosca", "Moscow Mule", "Soda italiana"] },
-        { nome: "Summer Fresh", preco: 39.80, drinks: ["Mojito", "Caipirosca", "Gin&Tônica", "Pink Limonade"] },
-        { nome: "Sunset Experience", preco: 48.00, drinks: ["Sex On The Beach", "Whisky Sour", "Aperol Spritz", "Mocktail de Frutas"] },
-        { nome: "Ousados & Refrescantes", preco: 55.00, drinks: ["Caiperol", "Caipirosca", "Aperol Spritz", "Pink Limonade"] },
-        { nome: "Clássicos Sofisticados", preco: 57.00, drinks: ["Negroni", "Aperol Spritz", "Gin&Tônica", "Piña Colada"] }
-      ],
-      itensPadrao: [
-        "Fruteiras de vidro",
-        "Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.",
-        "Insumos: frutas, gelo, xaropes e bebidas"
-      ]
-    };
-
-    let config = JSON.parse(localStorage.getItem('momentoBartendersConfig')) || CONFIG_PADRAO;
-    let valorTotalNumerico = 0;
-
-    function atualizarSelectPacotes() {
-      const select = document.getElementById('pacote');
-      select.innerHTML = '';
-      config.pacotes.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.preco;
-        opt.textContent = p.nome;
-        select.appendChild(opt);
-      });
-    }
-
-    function carregarConfiguracao() {
-      atualizarSelectPacotes();
-      document.getElementById('itensPadrao').value = config.itensPadrao.join('\n');
-      renderizarPacotesAdmin();
-    }
-
-    function renderizarPacotesAdmin() {
-      const container = document.getElementById('pacotesAdmin');
-      container.innerHTML = '';
-      config.pacotes.forEach((p, index) => {
-        const div = document.createElement('div');
-        div.className = 'pacote-item';
-        div.innerHTML = `
-          <div class="input-group">
-            <input type="text" value="${p.nome}" oninput="config.pacotes[${index}].nome=this.value" placeholder="Nome do pacote">
-          </div>
-          <div class="input-group">
-            <input type="number" step="0.01" value="${p.preco}" oninput="config.pacotes[${index}].preco=parseFloat(this.value)" placeholder="Preço">
-          </div>
-          <div class="input-group">
-            <label>Drinks (um por linha)</label>
-            <textarea class="drink-input" rows="3" oninput="config.pacotes[${index}].drinks=this.value.split('\\n').filter(d => d.trim())">${p.drinks.join('\n')}</textarea>
-          </div>
-          <button type="button" onclick="removerPacote(${index})" style="background:#600; padding:5px; font-size:12px;">Remover</button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function addPacote() {
-      config.pacotes.push({ nome: "Novo Pacote", preco: 0, drinks: [] });
-      renderizarPacotesAdmin();
-    }
-
-    function removerPacote(index) {
-      if (config.pacotes.length > 1) {
-        config.pacotes.splice(index, 1);
-        renderizarPacotesAdmin();
-        atualizarSelectPacotes();
-      }
-    }
-
-    function salvarConfiguracoes() {
-      config.itensPadrao = document.getElementById('itensPadrao').value.split('\n').filter(i => i.trim());
-      localStorage.setItem('momentoBartendersConfig', JSON.stringify(config));
-      atualizarSelectPacotes();
-      alert('Configurações salvas!');
-    }
-
-    function resetarConfiguracoes() {
-      if (confirm('Tem certeza? Isso apagará todas as suas alterações.')) {
-        config = JSON.parse(JSON.stringify(CONFIG_PADRAO));
-        localStorage.setItem('momentoBartendersConfig', JSON.stringify(config));
-        carregarConfiguracao();
-        alert('Configurações restauradas ao padrão.');
-      }
-    }
-
-    function getDrinksByPreco(preco) {
-      const pacote = config.pacotes.find(p => p.preco == preco);
-      return pacote ? pacote.drinks : [];
-    }
-
-    function getNomePacoteByPreco(preco) {
-      const pacote = config.pacotes.find(p => p.preco == preco);
-      return pacote ? pacote.nome : 'Desconhecido';
-    }
-
-    let cliquesLogo = 0;
-    document.getElementById('logo').addEventListener('click', () => {
-      cliquesLogo++;
-      if (cliquesLogo >= 3) {
-        document.getElementById('adminPanel').style.display = 'block';
-        cliquesLogo = 0;
-      }
+    // Mostrar campos extras
+    document.getElementById('balcao').addEventListener('change', () => {
+      document.getElementById('grupoBalcao').style.display = this.checked ? 'block' : 'none';
+    });
+    document.getElementById('coposVidro').addEventListener('change', () => {
+      document.getElementById('grupoCopos').style.display = this.checked ? 'block' : 'none';
+    });
+    document.getElementById('distancia').addEventListener('input', () => {
+      const km = parseInt(this.value) || 0;
+      document.getElementById('grupoDeslocamento').style.display = km > 0 ? 'block' : 'none';
     });
 
-    carregarConfiguracao();
-
-    // === LÓGICA PRINCIPAL ===
-    const { jsPDF } = window.jspdf;
+    let custoTotal = 0;
+    let valorFinal = 0;
+    let margem = 0;
 
     function formatarDataBR(dataISO) {
       if (!dataISO) return '';
@@ -398,100 +295,79 @@
       const nome = document.getElementById('nome').value || 'Cliente';
       const localEvento = document.getElementById('localEvento').value || '';
       const dataEvento = document.getElementById('dataEvento').value;
-      const distancia = parseFloat(document.getElementById('distancia').value) || 0;
-      const convidados = parseInt(document.getElementById('convidados').value) || 0;
       
-      const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
-      const nomePacote = getNomePacoteByPreco(precoPorPessoa);
+      const bartenders = parseInt(document.getElementById('bartenders').value) || 0;
+      const valorBartender = parseFloat(document.getElementById('valorBartender').value) || 0;
+      
+      const auxiliares = parseInt(document.getElementById('auxiliares').value) || 0;
+      const valorAuxiliar = parseFloat(document.getElementById('valorAuxiliar').value) || 0;
+      
+      const prolabore = parseFloat(document.getElementById('prolabore').value) || 0;
+      margem = parseFloat(document.getElementById('margemLucro').value) || 0;
       
       const balcao = document.getElementById('balcao').checked;
+      const valorBalcao = balcao ? parseFloat(document.getElementById('valorBalcao').value) || 0 : 0;
+      
       const coposVidro = document.getElementById('coposVidro').checked;
+      const valorCopos = coposVidro ? parseFloat(document.getElementById('valorCopos').value) || 0 : 0;
       
-      if (convidados <= 0) {
-        alert('Por favor, insira um número válido de convidados.');
-        return;
-      }
-      
-      let valorBase = convidados * precoPorPessoa;
-      if (valorBase < 2700) valorBase = 2700;
-      
-      let extras = 0;
-      if (balcao) extras += 250;
-      if (coposVidro) extras += 350;
-      
-      const taxaDeslocamento = distancia > 20 ? 200 : 0;
-      valorTotalNumerico = valorBase + extras + taxaDeslocamento;
-      
-      const totalFormatado = `R$ ${valorTotalNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-      
+      const distancia = parseInt(document.getElementById('distancia').value) || 0;
+      const valorDeslocamento = distancia > 0 ? parseFloat(document.getElementById('valorDeslocamento').value) || 0 : 0;
+
+      // Custo total SEM lucro
+      custoTotal = 
+        (bartenders * valorBartender) +
+        (auxiliares * valorAuxiliar) +
+        prolabore +
+        valorBalcao +
+        valorCopos +
+        valorDeslocamento;
+
+      // Aplica margem de lucro
+      valorFinal = custoTotal * (1 + margem / 100);
+
+      // Atualiza interface
       document.getElementById('cliente').textContent = nome + (localEvento ? ` - ${localEvento}` : '');
-      document.getElementById('total').textContent = totalFormatado;
+      document.getElementById('total').textContent = `R$ ${valorFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      
+      document.getElementById('custoTotal').textContent = custoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      document.getElementById('margemMostrada').textContent = margem;
+      document.getElementById('valorFinalMostrado').textContent = valorFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      
+      document.getElementById('preview').style.display = 'block';
       document.getElementById('result').classList.add('show');
     }
 
     function copiarValor() {
-      const totalText = document.getElementById('total').textContent;
-      navigator.clipboard.writeText(totalText).then(() => {
-        alert('Valor copiado!');
-      }).catch(() => {
-        alert('Seu navegador não permite copiar. Tente manualmente.');
-      });
+      navigator.clipboard.writeText(`R$ ${valorFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`)
+        .then(() => alert('Valor copiado!'))
+        .catch(() => alert('Não foi possível copiar.'));
     }
 
-    // ✅ FUNÇÃO CORRIGIDA: Emojis funcionam em todos os dispositivos
-    function enviarWhatsApp() {
+    function enviarWhatsAppCliente() {
       const nome = document.getElementById('nome').value || 'Cliente';
       const localEvento = document.getElementById('localEvento').value || '';
       const dataEvento = document.getElementById('dataEvento').value;
-      const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
-      const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
-      const nomePacote = getNomePacoteByPreco(precoPorPessoa);
-      const balcao = document.getElementById('balcao').checked;
+      const bartenders = parseInt(document.getElementById('bartenders').value) || 0;
+      const auxiliares = parseInt(document.getElementById('auxiliares').value) || 0;
       const coposVidro = document.getElementById('coposVidro').checked;
-      const taxaDeslocamento = distancia > 20 ? 200 : 0;
+      const distancia = parseInt(document.getElementById('distancia').value) || 0;
+      const balcao = document.getElementById('balcao').checked;
 
-      const duplas = Math.ceil(convidados / 50);
-      const bartenders = duplas;
-      const auxiliares = duplas;
-      const copeiros = coposVidro ? duplas : 0;
-
-      const drinks = getDrinksByPreco(precoPorPessoa);
-      const drinksTexto = drinks.length > 0 
-        ? `• Drinks inclusos: ${drinks.join(', ')}. `
-        : '';
-
-      const nomePacoteSeguro = nomePacote.replace(/&/g, "e");
-
-      // ✅ Mensagem completa, sem \n, com emojis reais (testado)
       let msg = `Olá, ${nome}! 🍸\n\n`;
-      msg += `Seu orçamento da Momento Bartenders ficou em R$ ${valorTotalNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} para ${convidados} convidados.\n\n`;
+      msg += `Seu orçamento da Momento Bartenders ficou em R$ ${valorFinal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}.\n\n`;
       msg += `📅 Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
       msg += `📍 Local: ${localEvento}\n`;
-      msg += `📦 Pacote: ${nomePacoteSeguro}\n\n`;
+      msg += `👥 Convidados: ${convidados}\n\n`;
 
-      msg += `✨ TUDO INCLUSO NO VALOR:\n`;
-      msg += drinksTexto;
-      config.itensPadrao.forEach(item => {
-        msg += `• ${item}\n`;
-      });
-
-      if (coposVidro) {
-        msg += `• Copos de vidro inclusos\n`;
-        msg += `• Copeiro${copeiros > 1 ? 's' : ''}: ${copeiros}\n`;
-      } else {
-        msg += `• Copos descartáveis\n`;
-      }
-
+      msg += `✨ O QUE ESTÁ INCLUSO:\n`;
+      msg += `• Equipe: ${bartenders} Bartenders e ${auxiliares} auxiliares de bar, uniformizados\n`;
+      msg += `• Utensílios: coqueteleiras, dosadores, maceradores, tapetes de bar, facas, etc.\n`;
+      msg += `• Copos: ${coposVidro ? 'vidro' : 'descartáveis'}\n`;
       if (balcao) msg += `• Balcão incluso\n`;
-      if (taxaDeslocamento > 0) msg += `• Deslocamento (${distancia} km)\n`;
-
-      let equipeTexto = `Equipe: ${bartenders} Bartenders e ${auxiliares} auxiliares de bar`;
-      if (copeiros > 0) {
-        equipeTexto += `, além de ${copeiros} copeiro${copeiros > 1 ? 's' : ''}`;
-      }
-      equipeTexto += ', uniformizados.';
-      msg += `\n${equipeTexto}\n\n`;
+      if (distancia > 0) msg += `• Deslocamento (${distancia} km)\n`;
+      msg += `\n`;
 
       msg += `💰 FORMAS DE PAGAMENTO:\n`;
       msg += `• 30% do valor para reservar a data\n`;
@@ -500,115 +376,56 @@
 
       msg += `Você planeja o evento!\nNós cuidamos do momento que todos vão lembrar. 😊`;
 
-      // ✅ URL segura — mantém \n para legibilidade, mas codifica corretamente
-      const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-      window.open(url, '_blank');
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    function gerarPDF() {
+    function enviarWhatsAppInterno() {
       const nome = document.getElementById('nome').value || 'Cliente';
       const localEvento = document.getElementById('localEvento').value || '';
       const dataEvento = document.getElementById('dataEvento').value;
-      const distancia = parseFloat(document.getElementById('distancia').value) || 0;
       const convidados = parseInt(document.getElementById('convidados').value) || 0;
-      const precoPorPessoa = parseFloat(document.getElementById('pacote').value);
-      const nomePacote = getNomePacoteByPreco(precoPorPessoa);
+      
+      const bartenders = parseInt(document.getElementById('bartenders').value) || 0;
+      const valorBartender = parseFloat(document.getElementById('valorBartender').value) || 0;
+      const totalBartenders = bartenders * valorBartender;
+      
+      const auxiliares = parseInt(document.getElementById('auxiliares').value) || 0;
+      const valorAuxiliar = parseFloat(document.getElementById('valorAuxiliar').value) || 0;
+      const totalAuxiliares = auxiliares * valorAuxiliar;
+      
+      const prolabore = parseFloat(document.getElementById('prolabore').value) || 0;
+      
       const balcao = document.getElementById('balcao').checked;
+      const valorBalcao = balcao ? parseFloat(document.getElementById('valorBalcao').value) || 0 : 0;
+      
       const coposVidro = document.getElementById('coposVidro').checked;
-      const taxaDeslocamento = distancia > 20 ? 200 : 0;
-
-      const duplas = Math.ceil(convidados / 50);
-      const bartenders = duplas;
-      const auxiliares = duplas;
-      const copeiros = coposVidro ? duplas : 0;
-
-      const drinks = getDrinksByPreco(precoPorPessoa);
-
-      const dataFormatada = dataEvento ? formatarDataBR(dataEvento) : '';
-      const dataHoje = new Date().toLocaleDateString('pt-BR');
-
-      const doc = new jsPDF();
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text(`${dataFormatada || 'Data não informada'}`, 15, 15);
-
-      doc.setFontSize(18);
-      doc.text(`${nome} - ${localEvento}`, 15, 25);
-
-      doc.setFontSize(22);
-      doc.setTextColor(0, 0, 0);
-      doc.text(`ORÇAMENTO BAR DE DRINKS`, 15, 40);
-
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text("OBJETIVO", 15, 55);
-      doc.setFont("helvetica", "normal");
-      doc.text("Open bar de drinks, no qual a nossa empresa se responsabilizará por todo preparo e", 15, 62);
-      doc.text("mão de obra pelo bar de drinks no evento.", 15, 68);
-
-      doc.setFont("helvetica", "bold");
-      doc.text("PROPOSTA", 15, 82);
-      doc.setFont("helvetica", "normal");
-      doc.text(`Open Bar de 5 Horas para aproximadamente ${convidados} pessoas.`, 15, 89);
-      doc.text(`Pacote selecionado: ${nomePacote}`, 15, 95);
-
-      let y = 101;
-
-      if (drinks.length > 0) {
-        const drinksPDF = drinks.map(d => d.replace(/&/g, "e")).join(', ');
-        doc.text(`Drinks inclusos: ${drinksPDF}`, 15, y);
-        y += 8;
-      }
-
-      doc.text("Incluso no valor:", 15, y); y += 8;
-
-      const addItem = (item) => {
-        doc.text(`• ${item}`, 20, y);
-        y += 7;
-      };
-
-      if (taxaDeslocamento > 0) addItem("Deslocamento");
-      config.itensPadrao.forEach(item => addItem(item));
+      const valorCopos = coposVidro ? parseFloat(document.getElementById('valorCopos').value) || 0 : 0;
       
-      if (coposVidro) {
-        addItem("Copos de vidro inclusos");
-        addItem(`Copeiro${copeiros > 1 ? 's' : ''}: ${copeiros}`);
-      } else {
-        addItem("Copos descartáveis");
-      }
-      
-      if (balcao) addItem("Balcão incluso");
+      const distancia = parseInt(document.getElementById('distancia').value) || 0;
+      const valorDeslocamento = distancia > 0 ? parseFloat(document.getElementById('valorDeslocamento').value) || 0 : 0;
 
-      let equipeTexto = `Equipe: ${bartenders} Bartenders e ${auxiliares} auxiliares de bar`;
-      if (copeiros > 0) {
-        equipeTexto += `, além de ${copeiros} copeiro${copeiros > 1 ? 's' : ''}`;
-      }
-      equipeTexto += ", uniformizados.";
-      doc.text(equipeTexto, 15, y); y += 12;
+      let msg = `📋 CONTROLE INTERNO - ORÇAMENTO\n\n`;
+      msg += `Cliente: ${nome}\n`;
+      msg += `Local: ${localEvento}\n`;
+      msg += `Data: ${dataEvento ? formatarDataBR(dataEvento) : 'não informada'}\n`;
+      msg += `Convidados: ${convidados}\n\n`;
 
-      doc.setFont("helvetica", "bold");
-      doc.text("FORMAS DE PAGAMENTO", 15, y); y += 7;
-      doc.setFont("helvetica", "normal");
-      doc.text(`VALOR: R$ ${valorTotalNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 15, y); y += 8;
-      doc.text("30% do valor para reservar a data.", 15, y); y += 7;
-      doc.text("Pagamento à vista ou parcelado em até 10x no cartão de crédito.", 15, y); y += 7;
-      doc.text("Saldo deve ser quitado até 5 dias antes do evento.", 15, y); y += 7;
-      doc.text("(Juros da máquina ou link ficam por conta do contratante).", 15, y); y += 12;
+      msg += `💰 CUSTOS:\n`;
+      msg += `• ${bartenders} Bartenders × R$ ${valorBartender.toFixed(2)} = R$ ${totalBartenders.toFixed(2)}\n`;
+      msg += `• ${auxiliares} Auxiliares × R$ ${valorAuxiliar.toFixed(2)} = R$ ${totalAuxiliares.toFixed(2)}\n`;
+      if (prolabore > 0) msg += `• Pró-labore: R$ ${prolabore.toFixed(2)}\n`;
+      if (balcao) msg += `• Balcão: R$ ${valorBalcao.toFixed(2)}\n`;
+      if (coposVidro) msg += `• Copos de vidro: R$ ${valorCopos.toFixed(2)}\n`;
+      if (distancia > 0) msg += `• Deslocamento (${distancia} km): R$ ${valorDeslocamento.toFixed(2)}\n`;
+      msg += `\n`;
 
-      doc.setFont("helvetica", "bold");
-      doc.text("TIAGO MOURA", 15, y);
-      doc.text("(15) 98131-9356", 15, y + 8);
-      doc.setFont("helvetica", "italic");
-      doc.text("“Você planeja o evento!", 15, y + 20);
-      doc.text("Nós cuidamos do momento que todos vão lembrar.”", 15, y + 26);
+      msg += `📊 CUSTO TOTAL: R$ ${custoTotal.toFixed(2)}\n`;
+      msg += `📈 MARGEM DE LUCRO: ${margem}%\n`;
+      msg += `✅ VALOR FINAL AO CLIENTE: R$ ${valorFinal.toFixed(2)}\n\n`;
+      msg += `📌 Enviado via ferramenta interna.`;
 
-      doc.setFontSize(9);
-      doc.setTextColor(120, 120, 120);
-      doc.text(`Documento gerado em: ${dataHoje} • Válido por 7 dias`, 105, 285, null, null, "center");
-
-      doc.save(`Orçamento - ${nome.replace(/\s+/g, '_')}.pdf`);
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
   </script>
 </body>
 </html>
-
